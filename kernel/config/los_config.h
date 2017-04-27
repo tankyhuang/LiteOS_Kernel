@@ -75,7 +75,7 @@ extern char __bss_start;
  * Number of Ticks in one second
  */
 #define LOSCFG_BASE_CORE_TICK_PER_SECOND                1000
-
+#define RAM_SIZE_LEVEL_1
 
 /****************************** Hardware interrupt module configuration ******************************/
 /**
