@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "los_bsp_uart.h"
+#include "bsp_usart.h"
 #include "los_demo_debug.h"
 
 /******************************************************************************
@@ -20,6 +21,9 @@
 void LOS_EvbUartInit(void)
 {
     //add you code here.
+    USART_Config();
+    Usart_SendString( DEBUG_USARTx,"Hello World\r\n");
+    printf("Power up done\r\n");
 
     return;
 }
@@ -82,6 +86,7 @@ void LOS_EvbUartWriteStr(const char* str)
 
 #ifndef LOS_KERNEL_TEST_KEIL_SWSIMU
 ///重定向c库函数printf到串口，重定向后可使用printf函数
+#if 0
 int fputc(int ch, FILE *f)
 {
     /* 发送一个字节数据到串口USART */
@@ -89,4 +94,6 @@ int fputc(int ch, FILE *f)
 
     return (ch);
 }
+#endif
+
 #endif

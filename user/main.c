@@ -1,6 +1,6 @@
 #include "los_sys.h"
 #include "los_tick.h"
-#include "los_task.ph"
+#include "los_task.h"
 #include "los_config.h"
 
 #include "los_bsp_led.h"
@@ -8,12 +8,24 @@
 #include "los_bsp_uart.h"
 #include "los_inspect_entry.h"
 #include "los_demo_entry.h"
+#include "debug.h"
+#include "console.h"
 
 #include <string.h>
 
+#include <led_driver.h>
+#include <led_driverCmd.h>
+
 extern void LOS_EvbSetup(void);
+extern int __Vectors_Size;
+extern int __Vectors_End;
+extern int __Vectors;
+extern int __initial_sp;
+extern int __heap_limit;
+extern int __heap_base;
 
 static UINT32 g_uwboadTaskID;
+
 LITE_OS_SEC_TEXT VOID LOS_BoadExampleTskfunc(VOID)
 {
     while (1)
@@ -77,18 +89,31 @@ int main(void)
      */
     LOS_EvbSetup();//init the device on the dev baord
 
+	debugInit();
+	consoleInit();
+    
     LOS_Demo_Entry();
 
     //LOS_Inspect_Entry();
 
     LOS_BoadExampleEntry();
 
+	printf("__Vectors_Size 0x%08x\r\n", (UINT32)&__Vectors_Size);
+	printf("__Vectors      0x%08x\r\n", (UINT32)&__Vectors);
+	printf("__Vectors_End  0x%08x\r\n", (UINT32)&__Vectors_End);
+	printf("__initial_sp   0x%08x\r\n", (UINT32)&__initial_sp);
+	printf("__heap_limit   0x%08x\r\n", (UINT32)&__heap_limit);
+	printf("__heap_base    0x%08x\r\n", (UINT32)&__heap_base);
+
+
+	printf_green("Los start\n");
+	consoleActivate();
+    mainTaskInitialize();
+    InitializeLEDDriver();
+    
     /* Kernel start to run */
     LOS_Start();
-		
-    for (;;)
-		{
 
-		}
+    for (;;);
     /* Replace the dots (...) with your own code. */
 }

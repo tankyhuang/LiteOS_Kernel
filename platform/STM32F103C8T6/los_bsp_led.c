@@ -1,3 +1,5 @@
+#include "stdlib.h"
+#include "stdio.h"
 #include "los_bsp_led.h"
 #include "bsp_led.h"
 /******************************************************************************
@@ -51,13 +53,15 @@ void LOS_EvbLedControl(int index, int cmd)
         {
             if (cmd == LED_ON)
             {
-							LED1_ON;
+            //printf("Led on\r\n");
+							//LED1_ON;
                 //add you code here.
                         /*led2 on */
             }
             else
             {
-							LED1_OFF;
+                //printf("Led off\r\n");
+							//LED1_OFF;
                 //add you code here.
                         /*led2 off */
             }
