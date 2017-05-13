@@ -5,11 +5,7 @@
 #include <led_driver.h>
 #include <led_driverCmd.h>
 #include <debug.h>
-
-#define GPIO_LED_STATUS_GREEN_GROUP             GPIOB
-#define GPIO_LED_STATUS_GREEN_BIT               GPIO_Pin_12
-#define GPIO_LED_STATUS_GREEN_FUNC              I43_GPIO_CONFIG_OUT
-#define GPIO_LED_STATUS_GREEN_LOGIC             1
+#include <gpio.h>
 
 typedef enum {
     I43_GPIO_CONFIG_OUT             = 0x00,

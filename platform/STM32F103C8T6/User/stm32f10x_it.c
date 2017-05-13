@@ -2,32 +2,27 @@
   ******************************************************************************
   * @file    Project/STM32F10x_StdPeriph_Template/stm32f10x_it.c 
   * @author  MCD Application Team
-  * @version V3.5.0
-  * @date    08-April-2011
+  * @version V3.4.0
+  * @date    10/15/2010
   * @brief   Main Interrupt Service Routines.
   *          This file provides template for all exceptions handler and 
   *          peripherals interrupt service routine.
   ******************************************************************************
-  * @attention
+  * @copy
   *
   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTI
-  
-  AL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
-  ******************************************************************************
-  */
+  * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+  */ 
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
-#include "bsp_usart.h"
-#include "los_typedef.h"
-#include "los_event.h"
+
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -44,7 +39,7 @@
 /******************************************************************************/
 
 /**
-  * @brief  This function handles NMI exception.
+  * @brief   This function handles NMI exception.
   * @param  None
   * @retval None
   */
@@ -122,12 +117,32 @@ void DebugMon_Handler(void)
 {
 }
 
+#if 0
+/**
+  * @brief  This function handles PendSVC exception.
+  * @param  None
+  * @retval None
+  */
+void PendSV_Handler(void)
+{
+}
+
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
   * @retval None
   */
+void SysTick_Handler(void)
+{
+}
+#endif
 
+/******************************************************************************/
+/*                 STM32F10x Peripherals Interrupt Handlers                   */
+/*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
+/*  available peripheral interrupt handler's name please refer to the startup */
+/*  file (startup_stm32f10x_xx.s).                                            */
+/******************************************************************************/
 
 /**
   * @brief  This function handles PPP interrupt request.
@@ -143,4 +158,4 @@ void DebugMon_Handler(void)
   */ 
 
 
-/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
+/******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
