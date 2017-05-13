@@ -22,8 +22,7 @@ void LOS_EvbUartInit(void)
 {
     //add you code here.
     USART_Config();
-    Usart_SendString( DEBUG_USARTx,"Hello World\r\n");
-    printf("Power up done\r\n");
+    Usart_SendString( DEBUG_USARTx,"Hello Lite!\r\n");
 
     return;
 }

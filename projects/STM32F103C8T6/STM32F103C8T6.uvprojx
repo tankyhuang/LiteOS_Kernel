@@ -132,12 +132,12 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>0</Capability>
-            <DriverSelection>-1</DriverSelection>
+            <Capability>1</Capability>
+            <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -544,6 +544,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\platform\STM32F103C8T6\bsp_usart.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103C8T6\bsp_led.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -563,11 +568,6 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\user\bsp_led.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_it.c</FileName>

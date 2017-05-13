@@ -27,22 +27,22 @@ mainTaskLoop( UINT32 uwParam1,
         uwRet = LOS_QueueRead(m_mainQ, &msgID, 4, LOS_WAIT_FOREVER);
         if(uwRet != LOS_OK)
         {
-            printf("recv message failure,error:%x\n",uwRet);
+            LOG("recv message failure,error:%x\n",uwRet);
             break;
         }
 		else
 		{
 			uwMsgCount++;
 		}
-        //printf("msgid = %d\n", msgID);
+        LOG("msgid = %d\n", msgID);
 
         switch( msgID )
         {
             case 1:
-                printf("msg 1\n");
+                //LOG("msg 1\n");
                 break;
             case 2:
-                printf("msg 2\n");
+                //LOG("msg 2\n");
                 break;
             default:
                 break;
@@ -69,18 +69,16 @@ void mainTaskInitialize(void)
     uwRet = LOS_TaskCreate(&m_mainTaskId, &stTaskInitParam);
     if (uwRet != LOS_OK)
     {
-        printf("main task create failed\n");
+        LOG("main task create failed\n");
     }
 
     uwRet = LOS_QueueCreate("queue", 5, &m_mainQ, 0, 50);
     if(uwRet != LOS_OK)
     {
-        printf("mainQ create failed %x\n", uwRet);
+        LOG("mainQ create failed %x\n", uwRet);
     }
 
-
-
-    printf("mainTaskInitialize\n");
+    LOG("mainTaskInitialize\n");
 }
 
 void mainTaskCreate(void)
@@ -96,7 +94,7 @@ void mainTaskSendMsg( void* msg, UINT32 param )
         uwRet = LOS_QueueWrite(m_mainQ, msg, sizeof(message), 0);
         if(uwRet != LOS_OK)
         {
-            printf("mainTaskSendMsg ERR 0x%x\n", uwRet);
+            LOG("mainTaskSendMsg ERR 0x%x\n", uwRet);
         }    
     }
 }

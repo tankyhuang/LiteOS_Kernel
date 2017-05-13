@@ -37,10 +37,11 @@ extern "C" {
 #endif /* __cpluscplus */
 #endif /* __cpluscplus */
 
+#include "los_demo_debug.h"
 #include "los_demo_entry.h"
 #include "los_task.h"
 #include <string.h>
-
+//#include "debug.h"
 
 static UINT32 g_uwDemoTaskID;
 int dprintf_1(const char *format,...)

@@ -129,12 +129,12 @@ void InitializeLEDDriver(void)
                                      leddrv_LEDBlinkAlarmTable[i].LedType );
             if( uwRet != LOS_OK )
             {
-                printf("LOS_SwtmrCreate fail 0x%x\n", uwRet);
+                LOG("LOS_SwtmrCreate fail 0x%x\n", uwRet);
                 return ;
             }
             
             s_LedInfo[i].BlinkAlarm = id;
-            printf("LOS_SwtmrCreate id = %d\n", s_LedInfo[i].BlinkAlarm );
+            LOG("LOS_SwtmrCreate id = %d\n", s_LedInfo[i].BlinkAlarm );
         }
 	}
 
@@ -158,18 +158,20 @@ void InitializeLEDDriver(void)
 		}
         else
         {
-            printf("s_LedInfo[i].GpioGroup 0x%x %d\n", s_LedInfo[i].GpioGroup , s_LedInfo[i].GpioBit);
-            printf("GPIOB 0x%x \n", GPIOB, s_LedInfo[i].GpioBit);
+            LOG("s_LedInfo[i].GpioGroup 0x%x %d\n", s_LedInfo[i].GpioGroup , s_LedInfo[i].GpioBit);
+            LOG("GPIOB 0x%x \n", GPIOB, s_LedInfo[i].GpioBit);
 			//I43_SelectGPIOEx( s_LedInfo[i].GpioGroup, s_LedInfo[i].GpioBit, I43_GPIO_GPIO );
 			//I43_ConfigGPIOEx( s_LedInfo[i].GpioGroup, s_LedInfo[i].GpioBit, I43_GPIO_CONFIG_OUT );
 		}
 	}
 
+#if DEBUG_ENABLE
 	RegisterLEDDriverCommand();
+#endif
 
     //LED1_ON;
-    printf("InitializeLEDDriver\n");
-    LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_2, ledblduty_20);
+    LOG("InitializeLEDDriver\n");
+    LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_1_2, ledblduty_20);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -243,7 +245,7 @@ void LEDDrv_Blink(LED_TYPE Type, uint16_t Freq)
 		uwRet = LOS_SwtmrStart(s_LedInfo[Type].BlinkAlarm);
 		if ( uwRet != LOS_OK )
 		{
-		    printf("LOS_SwtmrStart fail 0x%x\n", uwRet);
+		    LOG("LOS_SwtmrStart fail 0x%x\n", uwRet);
 		}
 	}
 }
@@ -359,7 +361,7 @@ void LEDDrv_BlinkDutyWithCount(LED_TYPE Type, uint16_t Freq, LEDBL_DUTY Duty, sh
 		(*s_LEDBlinkNotify[Type].p_cbr)(s_LEDBlinkNotify[Type].p_user_instance);
 	}
 
-    printf("LOS_SwtmrStart %d\n", s_LedInfo[Type].BlinkAlarm );
+    //LOG("LOS_SwtmrStart %d\n", s_LedInfo[Type].BlinkAlarm );
 
 	if(s_LedInfo[Type].BlinkAlarm != OS_NULL_INT )
 	{	// Start blink alarm
@@ -367,7 +369,7 @@ void LEDDrv_BlinkDutyWithCount(LED_TYPE Type, uint16_t Freq, LEDBL_DUTY Duty, sh
 		uwRet = LOS_SwtmrStart(s_LedInfo[Type].BlinkAlarm);
 		if ( uwRet != LOS_OK )
 		{
-		    printf("LOS_SwtmrStart fail 0x%x\n", uwRet);
+		    LOG("LOS_SwtmrStart fail 0x%x\n", uwRet);
 		}
 	}
 
@@ -460,7 +462,7 @@ static void LEDBlinkTimer(UINT32 pUserInstance)
 
 static void LEDOnOff(LED_TYPE Type, bool IsOn)
 {
-    //printf("LEDOnOff type %d - %d\n", Type, IsOn);
+    //LOG("LEDOnOff type %d - %d\n", Type, IsOn);
 	if( s_LedInfo[Type].Enable)
 	{
 		switch (Type)
@@ -470,7 +472,7 @@ static void LEDOnOff(LED_TYPE Type, bool IsOn)
 				{
 				    if ( IsOn )
 				    {
-				        //printf("LEDOnOff type %d - %d\n", Type, IsOn);
+				        //LOG("LEDOnOff type %d - %d\n", Type, IsOn);
 				        //LED1_ON;
 				        digitalLo(s_LedInfo[ledtype_StatusLED_Green].GpioGroup, s_LedInfo[ledtype_StatusLED_Green].GpioBit);
 				    }

@@ -269,6 +269,7 @@ LITE_OS_SEC_TEXT_INIT UINT32 osTaskInit(VOID)
     (VOID)memset((void *)(&g_stLosTask), 0, sizeof(g_stLosTask));
     g_stLosTask.pstRunTask = &g_pstTaskCBArray[g_uwTskMaxNum];
     g_stLosTask.pstRunTask->uwTaskID = uwIndex;
+    g_stLosTask.pstRunTask->pcTaskName = "BOOT";
     g_stLosTask.pstRunTask->usTaskStatus = (OS_TASK_STATUS_UNUSED | OS_TASK_STATUS_RUNNING);
     g_stLosTask.pstRunTask->usPriority = OS_TASK_PRIORITY_LOWEST + 1;
     osPriqueueInit();
@@ -332,6 +333,22 @@ LITE_OS_SEC_TEXT UINT32 LOS_CurTaskIDGet(VOID)
         return LOS_ERRNO_TSK_ID_INVALID;
     }
     return g_stLosTask.pstRunTask->uwTaskID;
+}
+
+/*****************************************************************************
+ Function : LOS_CurTaskNameGet
+ Description : get id of current running task.
+ Input       : None
+ Output      : None
+ Return      : task name
+ *****************************************************************************/
+LITE_OS_SEC_TEXT const char * LOS_CurTaskNameGet(VOID)
+{
+    if (NULL == g_stLosTask.pstRunTask)
+    {
+        return NULL;
+    }
+    return g_stLosTask.pstRunTask->pcTaskName;
 }
 
 /*****************************************************************************

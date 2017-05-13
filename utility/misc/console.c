@@ -45,10 +45,9 @@ static PSCONSOLECOMMAND sConsoleFunctionList[MAX_CONSOLE_FUNCTION_LISTS];
 static UINT32 m_uiConsoleListCount = 0;
 
 // Prompt
-static CHAR     szPrompt[CONSOLE_PROMPT_MAX_LENGTH]     = {0};
-static CHAR     szConsoleLine[CONSOLE_LINE_MAX_LENGTH]  = {0};
-static CHAR     szLastCommand[CONSOLE_LINE_MAX_LENGTH]  = {0};
-static char     szTempContext[CONSOLE_LINE_MAX_LENGTH + 1];
+static char     szPrompt[CONSOLE_PROMPT_MAX_LENGTH]     = {0};
+static char     szConsoleLine[CONSOLE_LINE_MAX_LENGTH]  = {0};
+static char     szLastCommand[CONSOLE_LINE_MAX_LENGTH]  = {0};
 
 
 static VOID consoleHelp(CHAR* szParam);
@@ -210,8 +209,8 @@ consoleParseAndExec(CHAR* szCommand)
     BOOL bFound = FALSE;
 
     // Comand name string
-    CHAR szName[64];
-	CHAR szCommandName[64];
+    CHAR szName[CONSOLE_LINE_MAX_LENGTH];
+	CHAR szCommandName[CONSOLE_LINE_MAX_LENGTH];
 
     // Gets the command name.
     sscanf( szCommand, "%s", szName );
@@ -595,6 +594,8 @@ void RemoveCharsFromStr( int cntChars )
 
 BOOL EraseCharBackSpace( )
 {
+    char szTempContext[CONSOLE_LINE_MAX_LENGTH]  = {0};
+
 	if ( !consoleMoveCaretLeft() )
 	{
 		return false;
@@ -610,6 +611,8 @@ BOOL EraseCharBackSpace( )
 
 BOOL EraseCharDelete( )
 {
+    char szTempContext[CONSOLE_LINE_MAX_LENGTH]  = {0};
+
 	if ( psConsoleContext->pos == psConsoleContext->len )
 	{
 		return false;
@@ -634,6 +637,7 @@ bool InsertChar( char ch )
     {
         if ( psConsoleContext->len >= (int)psConsoleContext->maxLen )	// no room for new char
         {
+            psConsoleContext->str[psConsoleContext->len-1] = CHAR_NULL_TERM;
             return false;
         }
         InsertSpacesToStr( 1 );
@@ -656,7 +660,7 @@ bool InsertChar( char ch )
         if ( psConsoleContext->pos == psConsoleContext->len )
         {
             psConsoleContext->len++;
-            psConsoleContext->str[psConsoleContext->len] = CHAR_NULL_TERM;
+            psConsoleContext->str[psConsoleContext->len-1] = CHAR_NULL_TERM;
         }
         consoleMoveCaretRight();
     }

@@ -70,7 +70,7 @@ typedef signed long long                                    INT64;
 typedef unsigned int                                        UINTPTR;
 typedef signed int                                          INTPTR;
 
-#if 0
+#if 1
 typedef INT32                                               ssize_t;
 typedef UINT32                                              size_t;
 

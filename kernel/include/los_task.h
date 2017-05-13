@@ -810,6 +810,25 @@ extern UINT16 LOS_TaskPriGet(UINT32 uwTaskID);
  */
 extern UINT32 LOS_CurTaskIDGet(VOID);
 
+/**
+ * @ingroup  los_task
+ * @brief Obtain current running task name.
+ *
+ * @par Description:
+ * This API is used to obtain the name of current running task.
+ *
+ * @attention None.
+ *
+ *
+ * @retval #LOS_ERRNO_TSK_NAME_EMPTY    0x02000205: Task name empty.
+ * @retval # Task name.
+ * @par Dependency:
+ * <ul><li>los_task.h: the header file that contains the API declaration.</li></ul>
+ * @see
+ * @since Huawei LiteOS V100R001C00
+ */
+extern const char * LOS_CurTaskNameGet(VOID);
+
 #ifdef __cplusplus
 #if __cplusplus
 }

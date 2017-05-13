@@ -12,7 +12,14 @@ extern "C" {
 
 #define DEBUG_ENABLE 1
 
-#define printf dbgPrint
+#if DEBUG_ENABLE
+#define LOG(...)    _log_d(__VA_ARGS__)
+#else
+#define LOG(...)
+#endif
+
+
+#define printf      dbgPrint
 
 
 #define ESC_COLOR_NORMAL    "\033[m"
@@ -51,11 +58,17 @@ extern "C" {
 
 void debugInit(void);
 
-VOID
-blockPrintf( CHAR* szText, UINT16 uwLength );
+void
+blockPrintf( char* szText, uint16_t uwLength );
 
-VOID
-dbgPrint( const CHAR* szFmt, ...);
+void
+dbgPrint( const char* szFmt, ...);
+
+void
+_log_d(const char *szFmt, ...);
+
+
+
 
 #ifdef __cplusplus
 }

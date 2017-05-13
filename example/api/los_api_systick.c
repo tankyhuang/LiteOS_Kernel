@@ -36,7 +36,8 @@
 #include "los_task.h"
 #include "los_api_systick.h"
 #include "los_inspect_entry.h"
-
+#include "los_demo_debug.h"
+//#include "debug.h"
 
 #ifdef __cplusplus
 #if __cplusplus

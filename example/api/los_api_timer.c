@@ -83,7 +83,7 @@ UINT32 Example_swTimer(void)
     LOS_SwtmrCreate(100, LOS_SWTMR_MODE_PERIOD,Timer2_Callback,&id2,1);
     dprintf("create Timer1 success\n");
 	
-    LOS_SwtmrStart(id1); 
+    LOS_SwtmrStart(id1);
     dprintf("start Timer1 sucess\n");
     LOS_TaskDelay(200);
     LOS_SwtmrStop(id1);

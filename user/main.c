@@ -15,6 +15,7 @@
 
 #include <led_driver.h>
 #include <led_driverCmd.h>
+#include <main_task.h>
 
 extern void LOS_EvbSetup(void);
 extern int __Vectors_Size;
@@ -31,7 +32,7 @@ LITE_OS_SEC_TEXT VOID LOS_BoadExampleTskfunc(VOID)
     while (1)
     {
         LOS_EvbLedControl(LOS_LED2, LED_ON);
-        LOS_EvbUartWriteStr("Board Test\n");
+        LOG("Board Test\n");
         LOS_TaskDelay(500);
         LOS_EvbLedControl(LOS_LED2, LED_OFF);
         LOS_TaskDelay(500);
@@ -89,25 +90,30 @@ int main(void)
      */
     LOS_EvbSetup();//init the device on the dev baord
 
+#if DEBUG_ENABLE
 	debugInit();
 	consoleInit();
-    
+#endif
+
     LOS_Demo_Entry();
 
     //LOS_Inspect_Entry();
 
-    LOS_BoadExampleEntry();
+    //LOS_BoadExampleEntry();
 
-	printf("__Vectors_Size 0x%08x\r\n", (UINT32)&__Vectors_Size);
-	printf("__Vectors      0x%08x\r\n", (UINT32)&__Vectors);
-	printf("__Vectors_End  0x%08x\r\n", (UINT32)&__Vectors_End);
-	printf("__initial_sp   0x%08x\r\n", (UINT32)&__initial_sp);
-	printf("__heap_limit   0x%08x\r\n", (UINT32)&__heap_limit);
-	printf("__heap_base    0x%08x\r\n", (UINT32)&__heap_base);
+	LOG("__Vectors_Size 0x%08x\r\n", (UINT32)&__Vectors_Size);
+	LOG("__Vectors      0x%08x\r\n", (UINT32)&__Vectors);
+	LOG("__Vectors_End  0x%08x\r\n", (UINT32)&__Vectors_End);
+	LOG("__initial_sp   0x%08x\r\n", (UINT32)&__initial_sp);
+	LOG("__heap_limit   0x%08x\r\n", (UINT32)&__heap_limit);
+	LOG("__heap_base    0x%08x\r\n", (UINT32)&__heap_base);
 
 
-	printf_green("Los start\n");
+#if DEBUG_ENABLE
+	printf_green("Los start\n");	
 	consoleActivate();
+#endif
+
     mainTaskInitialize();
     InitializeLEDDriver();
     

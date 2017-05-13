@@ -3,15 +3,17 @@
 #include <string.h>
 #include <stdarg.h>
 #include <debug.h>
+#include <freq.h>
 #include <bsp_usart.h>
 #include "los_task.h"
 #include "los_mux.h"
 
 #if DEBUG_ENABLE 
 
-#define MAX_PRINT 129
+#define MAX_PRINT 128
 
-static UINT32 m_MutextPrint = 0;
+static uint32_t m_MutextPrint = 0;
+static uint8_t  m_debugEnable = true;
 
 void debugInit( void )
 {
@@ -55,7 +57,7 @@ blockPrintf( CHAR* szText, UINT16 uwLength )
 }
 
 VOID
-dbgPrint( const CHAR* szFmt, ...)
+dbgPrint( const char* szFmt, ...)
 {
     va_list ap;
 
@@ -78,6 +80,33 @@ dbgPrint( const CHAR* szFmt, ...)
 
     blockPrintf(szText, uiLen);
 }
+
+
+void _log_d(const CHAR* szFmt, ...)
+{
+    va_list ap;
+
+    uint32_t len;
+
+    char szText[MAX_PRINT] = {0};
+
+    len = sprintf(szText, "%08d [%0-8.8s]", (uint32_t)LOS_Tick2MS(LOS_TickCountGet())/*/GET_SYS_FREQ_KHZ()*/, (char *)LOS_CurTaskNameGet() );
+    va_start(ap, szFmt);
+
+    // Build debug string.
+    len += vsnprintf( szText + len, MAX_PRINT-len-1, szFmt, ap );
+
+    va_end(ap);
+
+    szText[ MAX_PRINT - 2 ] = '\n';
+    szText[ MAX_PRINT - 1 ] = '\0';
+
+    if ( m_debugEnable )
+    {
+        dbgPrint("%s", szText);
+    }
+}
+
 
 #endif
 
