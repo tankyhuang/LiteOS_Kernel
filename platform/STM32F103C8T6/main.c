@@ -15,6 +15,9 @@
 
 #include <led_driver.h>
 #include <led_driverCmd.h>
+#include <gpio_conf.h>
+#include <sti_timer.h>
+
 #include <main_task.h>
 
 extern void LOS_EvbSetup(void);
@@ -116,6 +119,8 @@ int main(void)
 
     mainTaskInitialize();
     InitializeLEDDriver();
+    initializeGPIO();
+    TIM2_Init();
     
     /* Kernel start to run */
     LOS_Start();

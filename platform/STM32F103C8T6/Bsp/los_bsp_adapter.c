@@ -7,7 +7,7 @@
 #include "los_bsp_key.h"
 #include "los_bsp_led.h"
 #include "los_bsp_uart.h"
-
+#include "bsp_usart.h"
 /* while use bsp code to start system tick, don't use LOS header */
 #define INCLUDE_LOS_HEADER
 #ifdef INCLUDE_LOS_HEADER
@@ -40,7 +40,7 @@ static unsigned int g_ucycle_per_tick = 0;
     and we can use LOS_HwiCreate(), LOS_HwiDelete() dynamically regist a irq func
     if g_use_ram_vect == 0, we use default vector table in rom start at address 0x00000000
 */
-const unsigned char g_use_ram_vect = 0;
+const unsigned char g_use_ram_vect = 1;
 
 /*****************************************************************************
     LOS function extern
@@ -183,7 +183,8 @@ void LosAdapIrqDisable(unsigned int irqnum)
     return;
 }
 
- 
+ extern void DEBUG_USART_IRQHandler(void);
+ extern void TIM2_IRQHandler(void);
 /*****************************************************************************
  Function    : LOS_EvbSetup
  Description : enable the device on the dev baord
@@ -196,6 +197,11 @@ void LOS_EvbSetup(void)
     LOS_EvbUartInit();
     LOS_EvbLedInit();
     LOS_EvbKeyInit();
+    
+    //TRACE("HWi create\n");
+    LOS_HwiCreate(37,0,0, USART1_IRQHandler, NULL);//创建中断	
+    LOS_HwiCreate(28,0,0, TIM2_IRQHandler, NULL);//创建中断TIM2	
+
     return;
 }
 

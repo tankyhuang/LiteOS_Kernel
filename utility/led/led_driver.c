@@ -147,7 +147,7 @@ void InitializeLEDDriver(void)
             TRACE("GPIOB 0x%x \n", GPIOB, s_LedInfo[i].GpioBit);
             
             sti_ConfigGPIOEx( s_LedInfo[i].GpioGroup, s_LedInfo[i].GpioBit, GPIO_Speed_2MHz, GPIO_Mode_Out_PP );
-            sti_SetGPIOEx(s_LedInfo[i].GpioGroup, !s_LedInfo[i].GpioBit, !s_LedInfo[i].Logic);
+            sti_SetGPIOEx(s_LedInfo[i].GpioGroup, s_LedInfo[i].GpioBit, !s_LedInfo[i].Logic);
 		}
 	}
 
@@ -157,7 +157,7 @@ void InitializeLEDDriver(void)
 
     //LED1_ON;
     TRACE("InitializeLEDDriver\n");
-    LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_1, ledblduty_20);
+    //LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_1, ledblduty_20);
 }
 
 //////////////////////////////////////////////////////////////////////////////
