@@ -15,7 +15,9 @@
 
 #include <led_driver.h>
 #include <led_driverCmd.h>
+#include <gpio.h>
 #include <main_task.h>
+#include <toycarfactory.h>
 
 extern void LOS_EvbSetup(void);
 extern int __Vectors_Size;
@@ -32,7 +34,7 @@ LITE_OS_SEC_TEXT VOID LOS_BoadExampleTskfunc(VOID)
     while (1)
     {
         LOS_EvbLedControl(LOS_LED2, LED_ON);
-        LOG("Board Test\n");
+        TRACE("Board Test\n");
         LOS_TaskDelay(500);
         LOS_EvbLedControl(LOS_LED2, LED_OFF);
         LOS_TaskDelay(500);
@@ -101,12 +103,12 @@ int main(void)
 
     //LOS_BoadExampleEntry();
 
-	LOG("__Vectors_Size 0x%08x\r\n", (UINT32)&__Vectors_Size);
-	LOG("__Vectors      0x%08x\r\n", (UINT32)&__Vectors);
-	LOG("__Vectors_End  0x%08x\r\n", (UINT32)&__Vectors_End);
-	LOG("__initial_sp   0x%08x\r\n", (UINT32)&__initial_sp);
-	LOG("__heap_limit   0x%08x\r\n", (UINT32)&__heap_limit);
-	LOG("__heap_base    0x%08x\r\n", (UINT32)&__heap_base);
+	TRACE("__Vectors_Size 0x%08x\r\n", (UINT32)&__Vectors_Size);
+	TRACE("__Vectors      0x%08x\r\n", (UINT32)&__Vectors);
+	TRACE("__Vectors_End  0x%08x\r\n", (UINT32)&__Vectors_End);
+	TRACE("__initial_sp   0x%08x\r\n", (UINT32)&__initial_sp);
+	TRACE("__heap_limit   0x%08x\r\n", (UINT32)&__heap_limit);
+	TRACE("__heap_base    0x%08x\r\n", (UINT32)&__heap_base);
 
 
 #if DEBUG_ENABLE
@@ -116,7 +118,11 @@ int main(void)
 
     mainTaskInitialize();
     InitializeLEDDriver();
-    
+    initializeGPIO();
+    ToyCarFactory_CreateGameState();
+
+
+    // Don't put code here    
     /* Kernel start to run */
     LOS_Start();
 

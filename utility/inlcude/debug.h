@@ -13,13 +13,10 @@ extern "C" {
 #define DEBUG_ENABLE 1
 
 #if DEBUG_ENABLE
-#define LOG(...)    _log_d(__VA_ARGS__)
+#define TRACE(...)    _log_d(__VA_ARGS__)
 #else
-#define LOG(...)
+#define TRACE(...)
 #endif
-
-
-#define printf      dbgPrint
 
 
 #define ESC_COLOR_NORMAL    "\033[m"
@@ -68,6 +65,7 @@ void
 _log_d(const char *szFmt, ...);
 
 
+#define printf      dbgPrint
 
 
 #ifdef __cplusplus

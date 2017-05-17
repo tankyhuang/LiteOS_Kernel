@@ -1,15 +1,14 @@
 #ifndef _LED_DRIVER_H_
 #define _LED_DRIVER_H_
 
-#include "cmsis_os.h"
-#include "bsp_led.h"
+#include "types.h"
+#include "sti_Gpio.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-    #
 
 //////////////////////////////////////////////////////////////////////////////
 //	CONSTANT DEFINITIONS
@@ -57,7 +56,7 @@ typedef enum LEDBL_DUTY
 } LEDBL_DUTY;
 
 typedef struct {
-	GPIO_TypeDef        *GpioGroup;
+	STI_GPIO_GROUP_TYPE GpioGroup;
 	uint16_t 			GpioBit;
 	BOOL				Logic;
 	BOOL 				Enable;

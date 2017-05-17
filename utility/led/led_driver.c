@@ -1,24 +1,13 @@
-#include <cmsis_os.h>
-#include <los_typedef.h>
+#include <stm32f10x.h>
+#include "types.h"
 #include <los_swtmr.h>
 #include <bsp_led.h>
 #include <led_driver.h>
 #include <led_driverCmd.h>
 #include <debug.h>
-#include <gpio.h>
+#include <sti_gpio.h>
+#include <gpio_conf.h>
 
-typedef enum {
-    I43_GPIO_CONFIG_OUT             = 0x00,
-    I43_GPIO_CONFIG_IN              = 0x80
-} I43_GPIO_CONFIG_TYPE;
-
-typedef enum {
-    I43_XLGPIO                      = 0x00,
-    I43_FGPIO                       = 0x01,
-    I43_CCDGPIO                     = 0x02,
-    I43_DVGPIO                      = 0x03,
-    I43_PWMGPIO                     = 0x04,
-}I43_GPIO_GROUP_TYPE;
 
 //////////////////////////////////////////////////////////////////////////////
 //	CONSTANT DEFINITIONS
@@ -125,12 +114,12 @@ void InitializeLEDDriver(void)
                                      leddrv_LEDBlinkAlarmTable[i].LedType );
             if( uwRet != LOS_OK )
             {
-                LOG("LOS_SwtmrCreate fail 0x%x\n", uwRet);
+                TRACE("LOS_SwtmrCreate fail 0x%x\n", uwRet);
                 return ;
             }
             
             s_LedInfo[i].BlinkAlarm = id;
-            LOG("LOS_SwtmrCreate id = %d\n", s_LedInfo[i].BlinkAlarm );
+            TRACE("LOS_SwtmrCreate id = %d\n", s_LedInfo[i].BlinkAlarm );
         }
 	}
 
@@ -148,16 +137,17 @@ void InitializeLEDDriver(void)
 		s_LEDBlinkNotify[i].p_user_instance = NULL;
 
         // TODO:
-		if(s_LedInfo[i].GpioGroup == GPIOD)
+		if(s_LedInfo[i].GpioGroup == sti_GPIOD)
         {
 			SetPwmDuty((LED_TYPE)i, s_PwmDuty);
 		}
         else
         {
-            LOG("s_LedInfo[i].GpioGroup 0x%x %d\n", s_LedInfo[i].GpioGroup , s_LedInfo[i].GpioBit);
-            LOG("GPIOB 0x%x \n", GPIOB, s_LedInfo[i].GpioBit);
-			//I43_SelectGPIOEx( s_LedInfo[i].GpioGroup, s_LedInfo[i].GpioBit, I43_GPIO_GPIO );
-			//I43_ConfigGPIOEx( s_LedInfo[i].GpioGroup, s_LedInfo[i].GpioBit, I43_GPIO_CONFIG_OUT );
+            TRACE("s_LedInfo[i].GpioGroup 0x%x %d\n", s_LedInfo[i].GpioGroup , s_LedInfo[i].GpioBit);
+            TRACE("GPIOB 0x%x \n", GPIOB, s_LedInfo[i].GpioBit);
+            
+            sti_ConfigGPIOEx( s_LedInfo[i].GpioGroup, s_LedInfo[i].GpioBit, GPIO_Speed_2MHz, GPIO_Mode_Out_PP );
+            sti_SetGPIOEx(s_LedInfo[i].GpioGroup, !s_LedInfo[i].GpioBit, !s_LedInfo[i].Logic);
 		}
 	}
 
@@ -166,8 +156,8 @@ void InitializeLEDDriver(void)
 #endif
 
     //LED1_ON;
-    LOG("InitializeLEDDriver\n");
-    LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_1_2, ledblduty_20);
+    TRACE("InitializeLEDDriver\n");
+    LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_1, ledblduty_20);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -241,7 +231,7 @@ void LEDDrv_Blink(LED_TYPE Type, uint16_t Freq)
 		uwRet = LOS_SwtmrStart(s_LedInfo[Type].BlinkAlarm);
 		if ( uwRet != LOS_OK )
 		{
-		    LOG("LOS_SwtmrStart fail 0x%x\n", uwRet);
+		    TRACE("LOS_SwtmrStart fail 0x%x\n", uwRet);
 		}
 	}
 }
@@ -357,7 +347,7 @@ void LEDDrv_BlinkDutyWithCount(LED_TYPE Type, uint16_t Freq, LEDBL_DUTY Duty, sh
 		(*s_LEDBlinkNotify[Type].p_cbr)(s_LEDBlinkNotify[Type].p_user_instance);
 	}
 
-    //LOG("LOS_SwtmrStart %d\n", s_LedInfo[Type].BlinkAlarm );
+    //TRACE("LOS_SwtmrStart %d\n", s_LedInfo[Type].BlinkAlarm );
 
 	if(s_LedInfo[Type].BlinkAlarm != OS_NULL_INT )
 	{	// Start blink alarm
@@ -365,7 +355,7 @@ void LEDDrv_BlinkDutyWithCount(LED_TYPE Type, uint16_t Freq, LEDBL_DUTY Duty, sh
 		uwRet = LOS_SwtmrStart(s_LedInfo[Type].BlinkAlarm);
 		if ( uwRet != LOS_OK )
 		{
-		    LOG("LOS_SwtmrStart fail 0x%x\n", uwRet);
+		    TRACE("LOS_SwtmrStart fail 0x%x\n", uwRet);
 		}
 	}
 
@@ -458,47 +448,36 @@ static void LEDBlinkTimer(UINT32 pUserInstance)
 
 static void LEDOnOff(LED_TYPE Type, bool IsOn)
 {
-    //LOG("LEDOnOff type %d - %d\n", Type, IsOn);
+    //TRACE("LEDOnOff type %d - %d\n", Type, IsOn);
 	if( s_LedInfo[Type].Enable)
 	{
 		switch (Type)
 		{
 			case ledtype_StatusLED_Green :
-				if(s_LedInfo[Type].Logic == TRUE)
-				{
-				    if ( IsOn )
-				    {
-				        //LOG("LEDOnOff type %d - %d\n", Type, IsOn);
-				        //LED1_ON;
-				        digitalLo(s_LedInfo[ledtype_StatusLED_Green].GpioGroup, s_LedInfo[ledtype_StatusLED_Green].GpioBit);
-				    }
-				    else
-				    {
-				        //LED1_OFF;
-				        digitalHi(s_LedInfo[ledtype_StatusLED_Green].GpioGroup, s_LedInfo[ledtype_StatusLED_Green].GpioBit);
-				    }
-					//I43_SetGPIOEx(s_LedInfo[ledtype_StatusLED_Green].GpioGroup, s_LedInfo[ledtype_StatusLED_Green].GpioBit, IsOn ? I43_TRUE : I43_FALSE);
-					//I43_SetGPIOEx(s_LedInfo[ledtype_StatusLED_Red].GpioGroup, s_LedInfo[ledtype_StatusLED_Red].GpioBit, I43_FALSE);
-				}
-				else
-				{
-					//I43_SetGPIOEx(s_LedInfo[ledtype_StatusLED_Green].GpioGroup, s_LedInfo[ledtype_StatusLED_Green].GpioBit, IsOn ? I43_FALSE : I43_TRUE);
-					//I43_SetGPIOEx(s_LedInfo[ledtype_StatusLED_Red].GpioGroup, s_LedInfo[ledtype_StatusLED_Red].GpioBit, I43_TRUE);
-				}
+			
+                if ( IsOn )
+                {                 
+                    //LED1_ON;
+                    //digitalLo(s_LedInfo[ledtype_StatusLED_Green].GpioGroup, s_LedInfo[ledtype_StatusLED_Green].GpioBit);
+                    
+                    sti_SetGPIOEx( s_LedInfo[ledtype_StatusLED_Green].GpioGroup, 
+                                   s_LedInfo[ledtype_StatusLED_Green].GpioBit, 
+                                   s_LedInfo[ledtype_StatusLED_Green].Logic);
+                    
+                }
+                else
+                {
+                    //LED1_OFF;
+                    
+                    sti_SetGPIOEx( s_LedInfo[ledtype_StatusLED_Green].GpioGroup, 
+                                   s_LedInfo[ledtype_StatusLED_Green].GpioBit, 
+                                   !s_LedInfo[ledtype_StatusLED_Green].Logic);
+                    
+                }
+			
 				break;
 
-			case ledtype_StatusLED_Red :
-				if(s_LedInfo[Type].Logic == TRUE)
-				{
-					//I43_SetGPIOEx(s_LedInfo[ledtype_StatusLED_Red].GpioGroup, s_LedInfo[ledtype_StatusLED_Red].GpioBit, IsOn ? I43_TRUE : I43_FALSE);
-					//I43_SetGPIOEx(s_LedInfo[ledtype_StatusLED_Green].GpioGroup, s_LedInfo[ledtype_StatusLED_Green].GpioBit, I43_FALSE);
-				}
-				else
-				{
-					//I43_SetGPIOEx(s_LedInfo[ledtype_StatusLED_Red].GpioGroup, s_LedInfo[ledtype_StatusLED_Red].GpioBit, IsOn ? I43_FALSE : I43_TRUE);
-					//I43_SetGPIOEx(s_LedInfo[ledtype_StatusLED_Green].GpioGroup, s_LedInfo[ledtype_StatusLED_Green].GpioBit, I43_TRUE);
-				}
-
+			case ledtype_StatusLED_Red :			
 				break;
 
 			default :

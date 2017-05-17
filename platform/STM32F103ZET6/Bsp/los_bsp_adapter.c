@@ -9,7 +9,7 @@
 #include "los_bsp_uart.h"
 
 /* while use bsp code to start system tick, don't use LOS header */
-#define INCLUDE_LOS_HEADER
+//#define INCLUDE_LOS_HEADER
 #ifdef INCLUDE_LOS_HEADER
 #include "los_tick.ph"
 #include "los_base.h"

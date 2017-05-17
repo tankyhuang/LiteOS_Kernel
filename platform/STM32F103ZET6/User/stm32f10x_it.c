@@ -22,6 +22,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include "motor.h"
+#include "gpio.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -136,6 +138,25 @@ void SysTick_Handler(void)
 {
 }
 #endif
+
+ static int count = 0;
+void TIM2_IRQHandler(void)
+{
+   
+    if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
+    {
+        TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+        if ( count++ % 2 )
+        {
+            GPIO_SetBits(GPIOC, GPIO_Pin_13);
+        }
+        else
+        {
+            GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+        }
+    }
+}
+
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */

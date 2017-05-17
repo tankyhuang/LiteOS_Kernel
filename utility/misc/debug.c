@@ -90,7 +90,7 @@ void _log_d(const CHAR* szFmt, ...)
 
     char szText[MAX_PRINT] = {0};
 
-    len = sprintf(szText, "%08d [%0-8.8s]", (uint32_t)LOS_Tick2MS(LOS_TickCountGet())/*/GET_SYS_FREQ_KHZ()*/, (char *)LOS_CurTaskNameGet() );
+    len = sprintf(szText, "%08d [%-8.8s]", (uint32_t)LOS_Tick2MS(LOS_TickCountGet())/*/GET_SYS_FREQ_KHZ()*/, (char *)LOS_CurTaskNameGet() );
     va_start(ap, szFmt);
 
     // Build debug string.

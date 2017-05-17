@@ -1,0 +1,12 @@
+
+#ifndef _CAPTURE_S0_CONTINUOUS_STATE_H_
+#define _CAPTURE_S0_CONTINUOUS_STATE_H_
+
+// FUNCTION DECLARATIONS.
+
+void AvoidenceState_Init( void );
+
+#endif //_CAPTURE_S0_CONTINUOUS_STATE_H_
+
+
+

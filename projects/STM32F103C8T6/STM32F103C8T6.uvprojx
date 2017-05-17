@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_MD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\kernel\include;..\..\kernel\base\include;..\..\kernel\config;..\..\kernel\cmsis;..\..\kernel\link\keil;..\..\kernel\cpu\arm\cortex-m3;..\..\example\include;..\..\platform\STM32F103C8T6;..\..\platform\STM32F103C8T6\Libraries\CMSIS;..\..\platform\STM32F103C8T6\Libraries\FWlib\inc;..\..\kernel\cpu\arm\cortex-m3;..\..\user;..\..\utility\inlcude;..\..\main;..\..\utility\led</IncludePath>
+              <IncludePath>..\..\kernel\include;..\..\kernel\base\include;..\..\kernel\config;..\..\kernel\cmsis;..\..\kernel\link\keil;..\..\kernel\cpu\arm\cortex-m3;..\..\example\include;..\..\platform\STM32F103C8T6;..\..\platform\STM32F103C8T6\Libraries\CMSIS;..\..\platform\STM32F103C8T6\Libraries\FWlib\inc;..\..\kernel\cpu\arm\cortex-m3;..\..\utility\inlcude;..\..\main;..\..\utility\led;..\..\platform\STM32F103C8T6\Bsp;..\..\platform\STM32F103C8T6\User;..\..\ztoy;..\..\SYSTEM</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -495,19 +495,14 @@
           <GroupName>cmsis</GroupName>
           <Files>
             <File>
-              <FileName>cmsis_liteos.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\cmsis\cmsis_liteos.c</FilePath>
-            </File>
-            <File>
               <FileName>core_cm3.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\platform\STM32F103C8T6\Libraries\CMSIS\core_cm3.c</FilePath>
             </File>
             <File>
-              <FileName>system_stm32f10x.c</FileName>
+              <FileName>cmsis_liteos.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\Libraries\CMSIS\system_stm32f10x.c</FilePath>
+              <FilePath>..\..\kernel\cmsis\cmsis_liteos.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -515,39 +510,39 @@
           <GroupName>platform-STM32F103C8T6</GroupName>
           <Files>
             <File>
-              <FileName>los_bsp_adapter.c</FileName>
+              <FileName>bsp_led.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\los_bsp_adapter.c</FilePath>
-            </File>
-            <File>
-              <FileName>los_bsp_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\los_bsp_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>los_bsp_key.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\los_bsp_key.c</FilePath>
-            </File>
-            <File>
-              <FileName>los_bsp_led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\los_bsp_led.c</FilePath>
-            </File>
-            <File>
-              <FileName>los_bsp_uart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\los_bsp_uart.c</FilePath>
+              <FilePath>..\..\platform\STM32F103C8T6\Bsp\bsp_led.c</FilePath>
             </File>
             <File>
               <FileName>bsp_usart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\bsp_usart.c</FilePath>
+              <FilePath>..\..\platform\STM32F103C8T6\Bsp\bsp_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_led.c</FileName>
+              <FileName>los_bsp_adapter.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\bsp_led.c</FilePath>
+              <FilePath>..\..\platform\STM32F103C8T6\Bsp\los_bsp_adapter.c</FilePath>
+            </File>
+            <File>
+              <FileName>los_bsp_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103C8T6\Bsp\los_bsp_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>los_bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103C8T6\Bsp\los_bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>los_bsp_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103C8T6\Bsp\los_bsp_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>los_bsp_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103C8T6\Bsp\los_bsp_uart.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -555,24 +550,24 @@
           <GroupName>startup</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32f10x_md.s</FileName>
+              <FileName>startup_stm32f10x_hd.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\Libraries\CMSIS\startup\startup_stm32f10x_md.s</FilePath>
+              <FilePath>..\..\platform\STM32F103C8T6\Libraries\CMSIS\startup\startup_stm32f10x_hd.s</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>app</GroupName>
+          <GroupName>user</GroupName>
           <Files>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\user\main.c</FilePath>
-            </File>
             <File>
               <FileName>stm32f10x_it.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\user\stm32f10x_it.c</FilePath>
+              <FilePath>..\..\platform\STM32F103C8T6\User\stm32f10x_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>system_stm32f10x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103C8T6\User\system_stm32f10x.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -794,6 +789,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\utility\led\led_driverCmd.c</FilePath>
             </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\gpio\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio_driverCmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\gpio\gpio_driverCmd.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -803,6 +808,31 @@
               <FileName>main_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\main\main_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103C8T6\main.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>ztoy</GroupName>
+          <Files>
+            <File>
+              <FileName>sti_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ztoy\sti_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>sti_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ztoy\sti_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>sti_interrupt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ztoy\sti_interrupt.c</FilePath>
             </File>
           </Files>
         </Group>

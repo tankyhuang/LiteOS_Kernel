@@ -845,7 +845,7 @@ consoleMain(VOID)
         		 break;
         	case KT_NEW_LINE:
                 ParseCommandLine( psConsoleContext->str );
-                mainTaskSendMsg( (void*)num, 4 );
+                //mainTaskSendMsg( (void*)num, 4 );
                 num++;
                 
                 break;

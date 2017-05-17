@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\kernel\include;..\..\kernel\base\include;..\..\kernel\config;..\..\kernel\cmsis;..\..\kernel\link\keil;..\..\kernel\cpu\arm\cortex-m3;..\..\example\include;..\..\platform\STM32F103ZET6;..\..\platform\STM32F103ZET6\Bsp;..\..\platform\STM32F103ZET6\User;..\..\platform\STM32F103ZET6\Libraries\CMSIS\CM3\CoreSupport;..\..\platform\STM32F103ZET6\Libraries\STM32F10x_StdPeriph_Driver\inc;..\..\platform\STM32F103ZET6\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;..\..\kernel\cpu\arm\cortex-m3;..\..\user;..\..\utility\inlcude;..\..\main;..\..\utility\led</IncludePath>
+              <IncludePath>..\..\kernel\include;..\..\kernel\base\include;..\..\kernel\config;..\..\kernel\cmsis;..\..\kernel\link\keil;..\..\kernel\cpu\arm\cortex-m3;..\..\example\include;..\..\platform\STM32F103ZET6;..\..\platform\STM32F103ZET6\Bsp;..\..\platform\STM32F103ZET6\User;..\..\platform\STM32F103ZET6\Libraries\CMSIS\CM3\CoreSupport;..\..\platform\STM32F103ZET6\Libraries\STM32F10x_StdPeriph_Driver\inc;..\..\platform\STM32F103ZET6\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;..\..\kernel\cpu\arm\cortex-m3;..\..\user;..\..\utility\inlcude;..\..\main;..\..\utility\led;..\..\utility\gpio;..\..\utility\drivers;..\..\main\system;..\..\ztoy</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -560,14 +560,14 @@
           <GroupName>user</GroupName>
           <Files>
             <File>
-              <FileName>stm32f10x_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\user\stm32f10x_it.c</FilePath>
-            </File>
-            <File>
               <FileName>system_stm32f10x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\platform\STM32F103ZET6\User\system_stm32f10x.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103ZET6\User\stm32f10x_it.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -789,6 +789,41 @@
               <FileType>1</FileType>
               <FilePath>..\..\utility\led\led_driverCmd.c</FilePath>
             </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\gpio\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio_driverCmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\gpio\gpio_driverCmd.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\gpio\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\gpio\interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>l293d.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\drivers\l293d.c</FilePath>
+            </File>
+            <File>
+              <FileName>MotorCtrl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\drivers\MotorCtrl.c</FilePath>
+            </File>
+            <File>
+              <FileName>motorCtrl_Cmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utility\drivers\motorCtrl_Cmd.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -803,6 +838,56 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\platform\STM32F103ZET6\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>stTimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\platform\STM32F103ZET6\App\stTimer.c</FilePath>
+            </File>
+            <File>
+              <FileName>ToyCarManager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\main\system\ToyCarManager.c</FilePath>
+            </File>
+            <File>
+              <FileName>ToyCarOffState.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\main\system\ToyCarOffState.c</FilePath>
+            </File>
+            <File>
+              <FileName>ToyCarFactory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\main\system\ToyCarFactory.c</FilePath>
+            </File>
+            <File>
+              <FileName>ToyCarState.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\main\system\ToyCarState.c</FilePath>
+            </File>
+            <File>
+              <FileName>ToyCarAvoidenceState.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\main\system\ToyCarAvoidenceState.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>ztoy</GroupName>
+          <Files>
+            <File>
+              <FileName>sti_Gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ztoy\sti_Gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>sti_Timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ztoy\sti_Timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>sti_Interrupt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ztoy\sti_Interrupt.c</FilePath>
             </File>
           </Files>
         </Group>
