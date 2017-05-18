@@ -200,7 +200,7 @@ void LOS_EvbSetup(void)
     
     //TRACE("HWi create\n");
     LOS_HwiCreate(37,0,0, USART1_IRQHandler, NULL);//创建中断	
-    LOS_HwiCreate(28,0,0, TIM2_IRQHandler, NULL);//创建中断TIM2	
+    //LOS_HwiCreate(28,0,0, TIM2_IRQHandler, NULL);//创建中断TIM2	
 
     return;
 }

@@ -10,12 +10,37 @@ extern "C" {
 // Port specifc file.
 #include "los_typedef.h"
 
+void 
+debugInit(void);
+
+void
+blockPrintf( char* str, uint16_t len );
+
+void
+dbg_print( const char* format, ...);
+
+
+void
+_log_d(const char *format, ...);
+
+
 #define DEBUG_ENABLE 1
 
 #if DEBUG_ENABLE
 #define TRACE(...)    _log_d(__VA_ARGS__)
+
+#ifndef ASSERT      
+#define ASSERT(_x)                                                              \
+        if (!(_x))                                                              \
+        {                                                                       \
+			dbg_error("Assert Failed\n");	    		                        \
+        }
+#endif
+
+
 #else
 #define TRACE(...)
+#define ASSERT(...)
 #endif
 
 
@@ -41,6 +66,7 @@ extern "C" {
 #define CYAN( x )           ESC_COLOR_CYAN   x ESC_COLOR_NORMAL
 #define WHITE( x )          ESC_COLOR_WHITE  x ESC_COLOR_NORMAL
 
+
 #define printf_color(color, str)    printf( color "%s" ESC_COLOR_NORMAL "\r", str )
 #define fprintf_color(color, str)   fprintf( stderr, color "%s" ESC_COLOR_NORMAL "\r", str )
 
@@ -53,19 +79,20 @@ extern "C" {
 #define printf_yellow(str)          printf_color(  ESC_COLOR_YELLOW, str )
 #define fprintf_yellow(str)         fprintf_color( ESC_COLOR_YELLOW, str )
 
-void debugInit(void);
+#define STI_ERROR_PREFIX      "[ERR]"
+#define STI_WARNING_PREFIX    "[WRN]"
+#define STI_INFO_PREFIX       "[INF]"
+#define STI_DEBUG_PREFIX      "[DBG]"
 
-void
-blockPrintf( char* szText, uint16_t uwLength );
+#define STI_ERROR_FORMAT(_format)   RED(STI_ERROR_PREFIX) ": %s(%d): " _format ,    __FILE__, __LINE__
+#define STI_WARN_FORMAT(_format)    RED(STI_WARNING_PREFIX) ": %s(%d): " _format ,  __FILE__, __LINE__
+#define STI_INFO_FORMAT(_format)    RED(STI_ERROR_PREFIX) ": %s(%d): " _format ,    __FILE__, __LINE__
+#define STI_DBG_FORMAT(_format)     RED(STI_DEBUG_PREFIX) ": %s(%d): " _format ,    __FILE__, __LINE__
 
-void
-dbgPrint( const char* szFmt, ...);
-
-void
-_log_d(const char *szFmt, ...);
+#define printf           dbg_print
+#define dbg_error(a,...) dbg_print(STI_ERROR_FORMAT(a), ## __VA_ARGS__)
 
 
-#define printf      dbgPrint
 
 
 #ifdef __cplusplus

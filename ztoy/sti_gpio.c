@@ -52,7 +52,7 @@ sti_SetGPIOEx( STI_GPIO_GROUP_TYPE group,
 
 
 uint8_t
-sti_GetGPIOEx( STI_GPIO_GROUP_TYPE group, 
+sti_GetGPIOEx( STI_GPIO_GROUP_TYPE group,
                uint16_t pin )
 {
     GPIO_TypeDef *psGPIOx;

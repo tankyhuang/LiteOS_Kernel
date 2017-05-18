@@ -6,6 +6,8 @@ extern "C"
 {
 #endif
 
+#include "stdio.h"
+#include "stdlib.h"
 #include "los_typedef.h"
 
 

@@ -3,8 +3,27 @@
 /* ****************************************************************** */
 
 
-#ifndef _STI_GPIO_H__
-#define _STI_GPIO_H__
+#ifndef _STI_INTERRUPT_H__
+#define _STI_INTERRUPT_H__
+
+//  ============================================================================================================================
+//    NVIC_PriorityGroup   | NVIC_IRQChannelPreemptionPriority | NVIC_IRQChannelSubPriority  | Description
+//  ============================================================================================================================
+//   NVIC_PriorityGroup_0  |                0                  |            0-15             |   0 bits for 
+//                         |                                   |                             |   4 bits for subpriority
+//  ----------------------------------------------------------------------------------------------------------------------------
+//   NVIC_PriorityGroup_1  |                0-1                |            0-7              |   1 bits for pre-emption priority
+//                         |                                   |                             |   3 bits for subpriority
+//  ----------------------------------------------------------------------------------------------------------------------------    
+//   NVIC_PriorityGroup_2  |                0-3                |            0-3              |   2 bits for pre-emption priority
+//                         |                                   |                             |   2 bits for subpriority
+//  ----------------------------------------------------------------------------------------------------------------------------    
+//   NVIC_PriorityGroup_3  |                0-7                |            0-1              |   3 bits for pre-emption priority
+//                         |                                   |                             |   1 bits for subpriority
+//  ----------------------------------------------------------------------------------------------------------------------------    
+//   NVIC_PriorityGroup_4  |                0-15               |            0                |   4 bits for pre-emption priority
+//                         |                                   |                             |   0 bits for subpriority                       
+//  ============================================================================================================================
 
 typedef enum
 {
@@ -72,7 +91,35 @@ typedef enum
     sti_IRQ_ID_NUM
 }STI_IRQ_ID_TYPE;
 
+typedef void (*P_STI_IRQ_HANDLER)( void );
 
-#endif /* _STI_GPIO_H__ */
+#define STI_HW_IRQ_HANDLER_Register(id, handler, priority)             \
+        {                                                              \
+            uint32_t ret;                                               \
+            ret = LOS_HwiCreate(  id,                                   \
+                                priority,                               \
+                                0,                                      \
+                                handler,                                \
+                                0);                                     \
+                                                                        \
+            ASSERT(LOS_OK == ret);                                      \
+        }
+
+#define STI_HW_IRQ_HANDLER_UnRegister(id, handler, priority)           \
+        {                                                              \
+            uint32_t ret = LOS_HwiDelete(id);                          \
+            ASSERT(LOS_OK == ret);                                     \
+        }
+
+
+void
+sti_ResgiterIRQHandler( P_STI_IRQ_HANDLER isr , 
+                        STI_IRQ_ID_TYPE id,
+                        uint32_t priority);
+
+void 
+sti_UnResgiterIRQHandler( STI_IRQ_ID_TYPE id );
+
+#endif /* _STI_INTERRUPT_H__ */
 
 

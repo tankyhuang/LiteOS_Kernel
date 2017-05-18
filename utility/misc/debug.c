@@ -28,7 +28,7 @@ void debugInit( void )
 }
 
 VOID
-blockPrintf( CHAR* szText, UINT16 uwLength )
+blockPrintf( char* str, UINT16 len )
 {
     //OsMutexGet( &txBlockingMutex, TX_WAIT_FOREVER );
     UINT32 uwRet;
@@ -41,23 +41,23 @@ blockPrintf( CHAR* szText, UINT16 uwLength )
     }
 
     // printf to the UART Monitor
-    if (szText[uwLength - 1] == '\n')
+    if (str[len - 1] == '\n')
     {
         // incase we have a line feed at the end, make sure we write at least one
         // carriage return
-        UartWriteFifo( szText, uwLength - 1, 0);
+        UartWriteFifo( str, len - 1, 0);
         UartWriteFifo( "\r\n", 2, 0);
     }
     else
     {
-        UartWriteFifo(szText, uwLength, 0 );
+        UartWriteFifo(str, len, 0 );
     }
 
     LOS_MuxPost( m_MutextPrint );
 }
 
 VOID
-dbgPrint( const char* szFmt, ...)
+dbg_print( const char* format, ...)
 {
     va_list ap;
 
@@ -65,10 +65,10 @@ dbgPrint( const char* szFmt, ...)
 
     CHAR szText[MAX_PRINT];
 
-    va_start(ap, szFmt);
+    va_start(ap, format);
 
     // Build debug string.
-    vsnprintf( szText, MAX_PRINT-1, szFmt, ap );
+    vsnprintf( szText, MAX_PRINT-1, format, ap );
 
     va_end(ap);
 
@@ -82,7 +82,7 @@ dbgPrint( const char* szFmt, ...)
 }
 
 
-void _log_d(const CHAR* szFmt, ...)
+void _log_d(const CHAR* format, ...)
 {
     va_list ap;
 
@@ -91,10 +91,10 @@ void _log_d(const CHAR* szFmt, ...)
     char szText[MAX_PRINT] = {0};
 
     len = sprintf(szText, "%08d [%-8.8s]", (uint32_t)LOS_Tick2MS(LOS_TickCountGet())/*/GET_SYS_FREQ_KHZ()*/, (char *)LOS_CurTaskNameGet() );
-    va_start(ap, szFmt);
+    va_start(ap, format);
 
     // Build debug string.
-    len += vsnprintf( szText + len, MAX_PRINT-len-1, szFmt, ap );
+    len += vsnprintf( szText + len, MAX_PRINT-len-1, format, ap );
 
     va_end(ap);
 
@@ -103,8 +103,13 @@ void _log_d(const CHAR* szFmt, ...)
 
     if ( m_debugEnable )
     {
-        dbgPrint("%s", szText);
+        dbg_print("%s", szText);
     }
+}
+
+void assert_failed(uint8_t* file, uint32_t line)
+{
+    dbg_print("assert failed: file %s  line %d\n");
 }
 
 
