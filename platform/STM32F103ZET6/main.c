@@ -15,7 +15,9 @@
 
 #include <led_driver.h>
 #include <led_driverCmd.h>
-#include <gpio.h>
+#include <gpio_conf.h>
+#include <sti_timer.h>
+
 #include <main_task.h>
 #include <toycarfactory.h>
 

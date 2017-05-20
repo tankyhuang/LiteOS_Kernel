@@ -113,10 +113,11 @@ usage :
 		printf("        <OnOffCount> Count Num(one count in On & Off)\r\n");
 	}
 
+// ledblink 0 2000 25 10
 static void LEDConsole_Blink(char *szArguments)
 {
 	int			param1;	// LED Type
-	int			param2;	// Frequency of Blink
+	int			param2;	// Frequency of Blink 1
 	int			param3;	// Duty (200 : Secret command)
 	int			param4;	// Count Number(one count in On & Off)
 	LED_TYPE	type;	// LED Type

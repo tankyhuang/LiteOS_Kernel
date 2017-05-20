@@ -510,11 +510,6 @@
           <GroupName>platform-STM32F103C8T6</GroupName>
           <Files>
             <File>
-              <FileName>bsp_led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103C8T6\Bsp\bsp_led.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\platform\STM32F103C8T6\Bsp\bsp_usart.c</FilePath>

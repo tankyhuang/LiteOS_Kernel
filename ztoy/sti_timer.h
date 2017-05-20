@@ -17,6 +17,30 @@
 //	TYPE DEFINITIONS
 //////////////////////////////////////////////////////////////////////////////
 
+#define            GENERAL_TIM                   TIM3
+#define            GENERAL_TIM_APBxClock_FUN     RCC_APB1PeriphClockCmd
+#define            GENERAL_TIM_CLK               RCC_APB1Periph_TIM3
+#define            GENERAL_TIM_Period            (4000-1)
+#define            GENERAL_TIM_Prescaler         (36000-1)
+// TIM3 输出比较通道1
+#define            GENERAL_TIM_CH1_GPIO_CLK      RCC_APB2Periph_GPIOA
+#define            GENERAL_TIM_CH1_PORT          GPIOA
+#define            GENERAL_TIM_CH1_PIN           GPIO_Pin_6
+
+// TIM3 输出比较通道2
+#define            GENERAL_TIM_CH2_GPIO_CLK      RCC_APB2Periph_GPIOA
+#define            GENERAL_TIM_CH2_PORT          GPIOA
+#define            GENERAL_TIM_CH2_PIN           GPIO_Pin_7
+
+// TIM3 输出比较通道3
+#define            GENERAL_TIM_CH3_GPIO_CLK      RCC_APB2Periph_GPIOB
+#define            GENERAL_TIM_CH3_PORT          GPIOB
+#define            GENERAL_TIM_CH3_PIN           GPIO_Pin_0
+
+// TIM3 输出比较通道4
+#define            GENERAL_TIM_CH4_GPIO_CLK      RCC_APB2Periph_GPIOB
+#define            GENERAL_TIM_CH4_PORT          GPIOB
+#define            GENERAL_TIM_CH4_PIN           GPIO_Pin_1
 
 typedef enum
 {
@@ -41,7 +65,6 @@ typedef void (*STI_TIMER_HANDLE)(void);
 // period = cycle * GET_SYS_FREQ_HZ()/ (prescaler + 1) - 1;
 // if cycle = 1000ms
 // period = 1000 * (72000000 / 36000) - 1 = 1999
-
 
 #define STI_HW_TIMER_Create(TIMx, prescaler, period, mode)              \
         {                                                               \
@@ -82,6 +105,8 @@ typedef void (*STI_TIMER_HANDLE)(void);
 //	FUNCTION DECLARATIONS
 //////////////////////////////////////////////////////////////////////////////
 void TIM2_Init(void);
+
+void GENERAL_TIM_Init(void);
 
 #endif /* _STI_TIMER_H__ */
 

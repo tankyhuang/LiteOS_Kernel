@@ -14,6 +14,7 @@
     
 
 static int count = 0;
+void GENERAL_TIM_Init(void);
 
 // cycle = 1/GET_SYS_FREQ_HZ() * ( prescaler + 1) * ( arr + 1)
 // period = cycle * GET_SYS_FREQ_HZ()/ (prescaler + 1) - 1;
@@ -26,26 +27,180 @@ void TIMtest_IRQHandler(void)
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
         if ( count++ % 2 )
         {
-            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            //sti_ConfigGPIOEx(sti_GPIOB, 0, GPIO_Speed_50MHz, GPIO_Mode_AF_PP);
+            //sti_SetGPIOEx(sti_GPIOB,0,1);
+            GPIO_SetBits(GPIOB, GPIO_Pin_0);
+            //TRACE("1\n");
         }
         else
         {
-            GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_0);
+            //sti_ConfigGPIOEx(sti_GPIOB,0,GPIO_Speed_50MHz, GPIO_Mode_AF_PP);
+            //sti_SetGPIOEx(sti_GPIOB,0,0);
+            //TRACE("2\n");
         }
     }
 }
+static void GENERAL_TIM_GPIO_Config(void) ;
+static void NVIC_TIM2Configuration(void)
+{ 
+    NVIC_InitTypeDef NVIC_InitStructure;
+
+    /* Enable the TIM5 gloabal Interrupt */
+    NVIC_InitStructure.NVIC_IRQChannel                      = TIM2_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority    = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority           = 1;
+    NVIC_InitStructure.NVIC_IRQChannelCmd                   = ENABLE;
+
+    NVIC_Init(&NVIC_InitStructure);
+}
 
 void TIM2_Init(void)
-{
+{   
+    //GENERAL_TIM_GPIO_Config();
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
     // 2000/(72000000/36000 ) = 1s
-    STI_HW_TIMER_Create(TIM2, 36000, 2000, TIM_CounterMode_Up );
-    STI_HW_IRQ_HANDLER_Register(sti_IRQ_ID_TIM2, TIMtest_IRQHandler, OS_HWI_PRIO_HIGHEST );
+    STI_HW_TIMER_Create( TIM2, 
+                         36000, 
+                         4000, 
+                         TIM_CounterMode_Up );
+                         
+    STI_HW_IRQ_HANDLER_Register( sti_IRQ_ID_TIM2, 
+                                 TIMtest_IRQHandler, 
+                                 OS_HWI_PRIO_HIGHEST );
     
     STI_NVIC_Config( 0, 1, TIM2_IRQn, ENABLE);
-    STI_HW_TIMER_Start( TIM2);
+    STI_HW_TIMER_Start( TIM2);  
 }
 
+/************通用定时器TIM参数定义，只限TIM2、3、4、5************/
+// 当使用不同的定时器的时候，对应的GPIO是不一样的，这点要注意
+// 我们这里默认使用TIM3
 
 
+
+/**************************函数声明********************************/
+
+
+
+///*
+// * 注意：TIM_TimeBaseInitTypeDef结构体里面有5个成员，TIM6和TIM7的寄存器里面只有
+// * TIM_Prescaler和TIM_Period，所以使用TIM6和TIM7的时候只需初始化这两个成员即可，
+// * 另外三个成员是通用定时器和高级定时器才有.
+// *-----------------------------------------------------------------------------
+// *typedef struct
+// *{ TIM_Prescaler            都有
+// *	TIM_CounterMode			     TIMx,x[6,7]没有，其他都有
+// *  TIM_Period               都有
+// *  TIM_ClockDivision        TIMx,x[6,7]没有，其他都有
+// *  TIM_RepetitionCounter    TIMx,x[1,8,15,16,17]才有
+// *}TIM_TimeBaseInitTypeDef; 
+// *-----------------------------------------------------------------------------
+// */
+
+/* ----------------   PWM信号 周期和占空比的计算--------------- */
+// ARR ：自动重装载寄存器的值
+// CLK_cnt：计数器的时钟，等于 Fck_int / (psc+1) = 72M/(psc+1)
+// PWM 信号的周期 T = ARR * (1/CLK_cnt) = ARR*(PSC+1) / 72M
+// 占空比P=CCR/(ARR+1)
+
+static void GENERAL_TIM_Mode_Config(void)
+{
+  // 开启定时器时钟,即内部时钟CK_INT=72M
+	GENERAL_TIM_APBxClock_FUN(GENERAL_TIM_CLK,ENABLE);
+
+/*--------------------时基结构体初始化-------------------------*/
+	// 配置周期，这里配置为100K
+	
+    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	// 自动重装载寄存器的值，累计TIM_Period+1个频率后产生一个更新或者中断
+	TIM_TimeBaseStructure.TIM_Period=GENERAL_TIM_Period;	
+	// 驱动CNT计数器的时钟 = Fck_int/(psc+1)
+	TIM_TimeBaseStructure.TIM_Prescaler= GENERAL_TIM_Prescaler;	
+	// 时钟分频因子 ，配置死区时间时需要用到
+	TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1;		
+	// 计数器计数模式，设置为向上计数
+	TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_Up;		
+	// 重复计数器的值，没用到不用管
+	TIM_TimeBaseStructure.TIM_RepetitionCounter=0;	
+	// 初始化定时器
+	TIM_TimeBaseInit(GENERAL_TIM, &TIM_TimeBaseStructure);
+
+	/*--------------------输出比较结构体初始化-------------------*/	
+	// 占空比配置
+	uint16_t CCR1_Val = 5;
+	uint16_t CCR2_Val = 4;
+	uint16_t CCR3_Val = 10;
+	uint16_t CCR4_Val = 2;
+	
+	TIM_OCInitTypeDef  TIM_OCInitStructure;
+	// 配置为PWM模式1
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	// 输出使能
+	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	// 输出通道电平极性配置	
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
+	
+	// 输出比较通道 1
+	TIM_OCInitStructure.TIM_Pulse = CCR1_Val;
+	TIM_OC1Init(GENERAL_TIM, &TIM_OCInitStructure);
+	TIM_OC1PreloadConfig(GENERAL_TIM, TIM_OCPreload_Enable);
+	
+	// 输出比较通道 2
+	TIM_OCInitStructure.TIM_Pulse = CCR2_Val;
+	TIM_OC2Init(GENERAL_TIM, &TIM_OCInitStructure);
+	TIM_OC2PreloadConfig(GENERAL_TIM, TIM_OCPreload_Enable);
+	
+	// 输出比较通道 3
+	TIM_OCInitStructure.TIM_Pulse = CCR3_Val;
+	TIM_OC3Init(GENERAL_TIM, &TIM_OCInitStructure);
+	TIM_OC3PreloadConfig(GENERAL_TIM, TIM_OCPreload_Enable);
+	
+	// 输出比较通道 4
+	TIM_OCInitStructure.TIM_Pulse = CCR4_Val;
+	TIM_OC4Init(GENERAL_TIM, &TIM_OCInitStructure);
+	TIM_OC4PreloadConfig(GENERAL_TIM, TIM_OCPreload_Enable);
+	
+	// 使能计数器
+	TIM_Cmd(GENERAL_TIM, ENABLE);
+}
+
+static void GENERAL_TIM_GPIO_Config(void) 
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  // 输出比较通道1 GPIO 初始化
+	RCC_APB2PeriphClockCmd(GENERAL_TIM_CH1_GPIO_CLK, ENABLE);
+  GPIO_InitStructure.GPIO_Pin   =  GENERAL_TIM_CH1_PIN;
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GENERAL_TIM_CH1_PORT, &GPIO_InitStructure);
+	
+	// 输出比较通道2 GPIO 初始化
+	RCC_APB2PeriphClockCmd(GENERAL_TIM_CH2_GPIO_CLK, ENABLE);
+  GPIO_InitStructure.GPIO_Pin   =  GENERAL_TIM_CH2_PIN;
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GENERAL_TIM_CH2_PORT, &GPIO_InitStructure);
+	
+	// 输出比较通道3 GPIO 初始化
+	RCC_APB2PeriphClockCmd(GENERAL_TIM_CH3_GPIO_CLK, ENABLE);
+  GPIO_InitStructure.GPIO_Pin   = GENERAL_TIM_CH3_PIN;
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GENERAL_TIM_CH3_PORT, &GPIO_InitStructure);
+	
+	// 输出比较通道4 GPIO 初始化
+	RCC_APB2PeriphClockCmd(GENERAL_TIM_CH3_GPIO_CLK, ENABLE);
+  GPIO_InitStructure.GPIO_Pin   =  GENERAL_TIM_CH3_PIN;
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GENERAL_TIM_CH3_PORT, &GPIO_InitStructure);
+}
+
+void GENERAL_TIM_Init(void)
+{
+	GENERAL_TIM_GPIO_Config();
+	GENERAL_TIM_Mode_Config();		
+}

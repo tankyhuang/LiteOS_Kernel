@@ -28,9 +28,9 @@ typedef struct LED_STATUS
 {
 	BOOL		    IsOn;
 	BOOL		    IsLocked;
-	uint16_t		Millisec;
+	uint16_t		Millisec;       // LED_BLINK_TIME * millisec = ms
 	uint16_t		CurrentTime;
-	uint16_t		MillisecOn;
+	uint16_t		MillisecOn;     // duty
 	uint16_t		MillisecOff;
 	int16_t		    OnOffCount;
 	int16_t		    OnOffCountMax;
@@ -157,7 +157,7 @@ void InitializeLEDDriver(void)
 
     //LED1_ON;
     TRACE("InitializeLEDDriver\n");
-    //LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_1, ledblduty_20);
+    //LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_2, ledblduty_20);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -180,10 +180,14 @@ void LEDDrv_On(LED_TYPE Type)
 
 void LEDDrv_Off(LED_TYPE Type)
 {
+    uint16_t uwRet = 0;
+
 	if (leddrv_LEDStatus[Type].IsLocked)
 	{
 		return;
 	}
+
+    TRACE("LEDDrv_Off  \n");
 
 	leddrv_LEDStatus[Type].IsOn			= FALSE;
 	leddrv_LEDStatus[Type].Millisec		= 0;
@@ -194,7 +198,11 @@ void LEDDrv_Off(LED_TYPE Type)
 	if(s_LedInfo[Type].BlinkAlarm != OS_NULL_INT)
 	{	// Stop blink alarm
 		//StopAlarm(s_LedInfo[Type].BlinkAlarm);
-		LOS_SwtmrStop(s_LedInfo[Type].BlinkAlarm);
+		uwRet = LOS_SwtmrStop(s_LedInfo[Type].BlinkAlarm);
+		if ( uwRet != LOS_OK )
+		{
+		    TRACE("LOS_SwtmrStop fail 0x%x\n", uwRet);
+		}
 	}
 }
 
@@ -347,8 +355,6 @@ void LEDDrv_BlinkDutyWithCount(LED_TYPE Type, uint16_t Freq, LEDBL_DUTY Duty, sh
 		(*s_LEDBlinkNotify[Type].p_cbr)(s_LEDBlinkNotify[Type].p_user_instance);
 	}
 
-    //TRACE("LOS_SwtmrStart %d\n", s_LedInfo[Type].BlinkAlarm );
-
 	if(s_LedInfo[Type].BlinkAlarm != OS_NULL_INT )
 	{	// Start blink alarm
 		//StartAlarm(s_LedInfo[Type].BlinkAlarm);
@@ -358,7 +364,6 @@ void LEDDrv_BlinkDutyWithCount(LED_TYPE Type, uint16_t Freq, LEDBL_DUTY Duty, sh
 		    TRACE("LOS_SwtmrStart fail 0x%x\n", uwRet);
 		}
 	}
-
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -412,14 +417,15 @@ static void LEDBlinkTimer(UINT32 pUserInstance)
 				if (leddrv_LEDStatus[led_type].OnOffCountMax > 0)
 				{
 					leddrv_LEDStatus[led_type].OnOffCount++;		//
+					
 					if (leddrv_LEDStatus[led_type].OnOffCount >= leddrv_LEDStatus[led_type].OnOffCountMax)
 					{
 						leddrv_LEDStatus[led_type].OnOffCount = 0;
 						if (leddrv_BlinkCBR[led_type] != NULL)
 						{
-							LEDDrv_Off(led_type);
+                            LEDDrv_Off(led_type);
 							(*leddrv_BlinkCBR[led_type])(leddrv_BlinkCBRUserInstance[led_type]);
-							return;
+                            return;
 						}
 					}
 				}
