@@ -93,7 +93,7 @@ static void SetPwmDuty(LED_TYPE LedType, uint32_t Duty);
 //////////////////////////////////////////////////////////////////////////////
 
 
-void InitializeLEDDriver(void)
+void LEDDrv_Init(void)
 {
 	uint32_t i = 0;
     uint16_t id = 0;
@@ -156,8 +156,8 @@ void InitializeLEDDriver(void)
 #endif
 
     //LED1_ON;
-    TRACE("InitializeLEDDriver\n");
-    //LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_2, ledblduty_20);
+    TRACE("LEDDrv_Init\n");
+    LEDDrv_BlinkDuty(ledtype_StatusLED_Green,ledblfreq_2, ledblduty_20);
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -23,7 +23,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "motor.h"
-#include "gpio.h"
+#include "gpio_conf.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{

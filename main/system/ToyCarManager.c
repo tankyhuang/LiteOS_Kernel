@@ -142,10 +142,10 @@ void ToyCarManager_RegisterState( TOYCAR_STATE_ID StateID, const char *pName, P_
     assert_param( s_tToyCarStateTable[StateID].StateID == toyCarState_Invalid ); // Forbiddance of double registration.
 
     TRACE( "ToyCar_RegisterState %s\n", pName );
-    s_tToyCarStateTable[StateID].StateID = StateID;
+    s_tToyCarStateTable[StateID].StateID    = StateID;
     s_tToyCarStateTable[StateID].pStateName = pName;
-    s_tToyCarStateTable[StateID].pOnStart = pOnStart;
-    s_tToyCarStateTable[StateID].pOnStop = pOnStop;
+    s_tToyCarStateTable[StateID].pOnStart   = pOnStart;
+    s_tToyCarStateTable[StateID].pOnStop    = pOnStop;
     s_tToyCarStateTable[StateID].pOnEventHandler = pOnEventHandler;
 }
 

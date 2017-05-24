@@ -2,10 +2,10 @@
 #define _MAIN_TASK_H_
 
 
-void mainTaskInitialize(void);
+void MainTask_Init(void);
 void mainTaskCreate(void);
 
-void mainTaskSendMsg( void* msg, UINT32 param );
+void MainTask_SendMessage( void* msg, UINT32 param );
 
 #endif
 

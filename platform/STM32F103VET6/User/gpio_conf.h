@@ -64,7 +64,7 @@ BEHIND_RIGHT_B_PIN	PD2	    左电机使能IO
                                                 GPIO_L293D_IN3_CLK | \
                                                 GPIO_L293D_IN4_CLK
 
-void initializeGPIO(void);
+void GPIODrv_Init(void);
 
 #ifdef __cplusplus
 }

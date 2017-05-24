@@ -11,7 +11,7 @@
 //#include "motorctrl_cmd.h"
 //#include "l293d.h"
 
-void initializeGPIO()
+void GPIODrv_Init(void)
 {
 
 #if DEBUG_ENABLE

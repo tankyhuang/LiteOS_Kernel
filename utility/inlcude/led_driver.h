@@ -70,7 +70,7 @@ typedef struct {
 //	FUNCTION DECLARATIONS
 //////////////////////////////////////////////////////////////////////////////
 
-void InitializeLEDDriver(void);
+void LEDDrv_Init(void);
 void LEDDrv_On(LED_TYPE Type);
 void LEDDrv_Off(LED_TYPE Type);
 void LEDDrv_Blink(LED_TYPE Type, uint16_t Freq);

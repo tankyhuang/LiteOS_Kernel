@@ -5,12 +5,12 @@
 #include <motorctrl.h>
 
 
-void motorCtrlInit(void)
+void MOTORCtrl_Init(void)
 {
 
 }
 
-void motorCtrl_Rotate(MOTOR_TYPE motor, ROTATE_TYPE rotate )
+void MOTORCtrl_Rotate(MOTOR_TYPE motor, ROTATE_TYPE rotate )
 {
     
     switch ( motor )
@@ -30,59 +30,59 @@ void motorCtrl_Rotate(MOTOR_TYPE motor, ROTATE_TYPE rotate )
     }
 }
 
-void motorCtrl_StopAll(void )
+void MOTORCtrl_StopAll(void )
 {
     L293D_INx_DISABLE_ALL;
 }
 
-void motorCtrl_CW(MOTOR_TYPE motor)
+void MOTORCtrl_CW(MOTOR_TYPE motor)
 {
 }
 
-void motorCtrl_CCW(MOTOR_TYPE motor)
+void MOTORCtrl_CCW(MOTOR_TYPE motor)
 {
 
 }
 
-void motorCtrlDeInit(void)
+void MOTORCtrl_DeInit(void)
 {
     
 }
 
 void ygGoForward(void)
 {
-    motorCtrl_Rotate(  motortype_Front_Left , rotateType_CW);
-    motorCtrl_Rotate(  motortype_Front_Right, rotateType_CW);
+    MOTORCtrl_Rotate(  motortype_Front_Left , rotateType_CW);
+    MOTORCtrl_Rotate(  motortype_Front_Right, rotateType_CW);
 
-    motorCtrl_Rotate(  motortype_Rear_Left  , rotateType_CW);
-    motorCtrl_Rotate(  motortype_Rear_Right , rotateType_CW);
+    MOTORCtrl_Rotate(  motortype_Rear_Left  , rotateType_CW);
+    MOTORCtrl_Rotate(  motortype_Rear_Right , rotateType_CW);
 }
 
 void ygGoBackward(void)
 {
-    motorCtrl_Rotate(motortype_Front_Left  ,  rotateType_CCW );
-    motorCtrl_Rotate(motortype_Front_Right ,  rotateType_CCW );
+    MOTORCtrl_Rotate(motortype_Front_Left  ,  rotateType_CCW );
+    MOTORCtrl_Rotate(motortype_Front_Right ,  rotateType_CCW );
 
-    motorCtrl_Rotate(motortype_Rear_Left   ,  rotateType_CCW );
-    motorCtrl_Rotate(motortype_Rear_Right  ,  rotateType_CCW );
+    MOTORCtrl_Rotate(motortype_Rear_Left   ,  rotateType_CCW );
+    MOTORCtrl_Rotate(motortype_Rear_Right  ,  rotateType_CCW );
 }
 
 void ygTurnLeft(void)
 {
-    motorCtrl_Rotate( motortype_Front_Left,  rotateType_CCW  );
-    motorCtrl_Rotate( motortype_Rear_Left ,  rotateType_CCW  );
+    MOTORCtrl_Rotate( motortype_Front_Left,  rotateType_CCW  );
+    MOTORCtrl_Rotate( motortype_Rear_Left ,  rotateType_CCW  );
 
-    motorCtrl_Rotate(motortype_Front_Right,  rotateType_CW );
-    motorCtrl_Rotate(motortype_Rear_Right ,  rotateType_CW );
+    MOTORCtrl_Rotate(motortype_Front_Right,  rotateType_CW );
+    MOTORCtrl_Rotate(motortype_Rear_Right ,  rotateType_CW );
 }
 
 void ygTurnRight(void)
 {
-    motorCtrl_Rotate(motortype_Front_Left  ,  rotateType_CW );
-    motorCtrl_Rotate(motortype_Rear_Left   ,  rotateType_CW );
+    MOTORCtrl_Rotate(motortype_Front_Left  ,  rotateType_CW );
+    MOTORCtrl_Rotate(motortype_Rear_Left   ,  rotateType_CW );
 
-    motorCtrl_Rotate( motortype_Front_Right,  rotateType_CCW );
-    motorCtrl_Rotate( motortype_Rear_Right ,  rotateType_CCW );
+    MOTORCtrl_Rotate( motortype_Front_Right,  rotateType_CCW );
+    MOTORCtrl_Rotate( motortype_Rear_Right ,  rotateType_CCW );
 }
 
 void ygStop(void)

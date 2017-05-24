@@ -49,15 +49,15 @@ typedef enum ROTATE_TYPE
 //////////////////////////////////////////////////////////////////////////////
 
 
-void motorCtrlInit(void);
+void MOTORCtrl_Init(void);
+void MOTORCtrl_UnInit(void);
 
 
 
-void motorCtrl_Rotate(MOTOR_TYPE motor, ROTATE_TYPE rotate);
+void MOTORCtrl_Rotate(MOTOR_TYPE motor, ROTATE_TYPE rotate);
 
-void motorCtrl_StopAll(void );
+void MOTORCtrl_StopAll(void );
 
-void motorCtrlDeInit(void);
 
 
 void ygGoForward(void);

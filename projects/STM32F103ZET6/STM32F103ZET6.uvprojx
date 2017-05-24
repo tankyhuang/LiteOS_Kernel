@@ -840,11 +840,6 @@
               <FilePath>..\..\platform\STM32F103ZET6\main.c</FilePath>
             </File>
             <File>
-              <FileName>stTimer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\platform\STM32F103ZET6\App\stTimer.c</FilePath>
-            </File>
-            <File>
               <FileName>ToyCarManager.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\main\system\ToyCarManager.c</FilePath>

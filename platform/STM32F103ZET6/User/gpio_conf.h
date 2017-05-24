@@ -24,7 +24,7 @@ typedef enum {
 }ST_GPIO_GROUP_TYPE;
 
 
-#define GPIO_LED_STATUS_GREEN_GROUP             GPIOC
+#define GPIO_LED_STATUS_GREEN_GROUP             ST_GPIOC
 #define GPIO_LED_STATUS_GREEN_BIT               GPIO_Pin_13
 #define GPIO_LED_STATUS_GREEN_CLK               RCC_APB2Periph_GPIOC
 #define GPIO_LED_STATUS_GREEN_FUNC              I43_GPIO_CONFIG_OUT

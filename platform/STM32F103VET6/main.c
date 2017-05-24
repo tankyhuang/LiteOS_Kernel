@@ -119,9 +119,9 @@ int main(void)
 	consoleActivate();
 #endif
 
-    mainTaskInitialize();
-    InitializeLEDDriver();
-    initializeGPIO();
+    MainTask_Init();
+    LEDDrv_Init();
+    GPIODrv_Init();
 
     // TIM2 interrupt register and function
 	//TIM2_Init();
