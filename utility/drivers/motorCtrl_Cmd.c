@@ -94,12 +94,12 @@ static void MotorConsole_Rotate(char *szArguments)
 
     if ( param1 >= MOTOR_TYPE_COUNT || param2 >= ROTATE_TYPE_COUNT )
     {
-        motorCtrl_StopAll();
+        MOTORCtrl_StopAll();
         goto usage;
     }
     
-    motorCtrl_StopAll();
-    motorCtrl_Rotate((MOTOR_TYPE)param1, (ROTATE_TYPE)param2);
+    MOTORCtrl_StopAll();
+    MOTORCtrl_Rotate((MOTOR_TYPE)param1, (ROTATE_TYPE)param2);
 	return;
 
 usage :

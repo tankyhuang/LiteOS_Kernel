@@ -17,9 +17,13 @@
 #include <led_driverCmd.h>
 #include <gpio_conf.h>
 #include <sti_timer.h>
-
+#include <motorctrl.h>
 #include <main_task.h>
+#include <SystemMonitor.h>
 #include <toycarfactory.h>
+#include <toycarManager.h>
+#include <HostMessageHandler.h>
+#include <host.h>
 
 extern void LOS_EvbSetup(void);
 extern int __Vectors_Size;
@@ -122,15 +126,19 @@ int main(void)
     MainTask_Init();
     LEDDrv_Init();
     GPIODrv_Init();
-
+    MOTORCtrl_Init();
+    
     // TIM2 interrupt register and function
 	//TIM2_Init();
 	
 	// TIM3 4CH PWM output
-	GENERAL_TIM_Init();
+	//GENERAL_TIM_Init();
+	SYSTEM_MONITOR_Init();
+	
     ToyCarFactory_CreateGameState();
+    ToyCar_ChangeState(toyCarState_Avoidence);
 
-
+    MainTask_SendMessage(HM_CREATE, 0);
     // Don't put code here    
     /* Kernel start to run */
     LOS_Start();

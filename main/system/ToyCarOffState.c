@@ -1,6 +1,9 @@
 #include "stm32f10x.h"
 #include "types.h"
+#include "SystemMonitor.h"
 #include "ToyCarManager.h"
+#include "HostMessageHandler.h"
+#include "host.h"
 #include "debug.h"
 
 // TYPE DEFINITIONS
@@ -33,6 +36,8 @@ static bool s_IsS0Started = false;
 void OffState_Init( void )
 {
     ToyCarManager_RegisterState( toyCarState_Off, "Off", OnStart, OnStop, OnEventHandler );
+    
+	SM_RegisterRedRayStatusCBR( _ToyCar_OnRedRayNotificationCBR, 0 );
 }
 
 static void OnStart( void )
@@ -42,7 +47,7 @@ static void OnStart( void )
 
 static void OnStop( void )
 {
-
+    HostMessageHandler_RegisterHostMessageCBR( MainTask_GetHandle(), HM_CREATE, _ToyCar_OnCreated, NULL);
 }
 
 static void OnOff( P_TOYCAR_COMPLETE_CBR pCompleteCBR, void *pUserInstance )

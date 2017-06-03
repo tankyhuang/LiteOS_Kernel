@@ -3,10 +3,13 @@
 #include <los_typedef.h>
 #include <l293d.h>
 #include <motorctrl.h>
-
+#include <motorctrl_cmd.h>
+#include <debug.h>
 
 void MOTORCtrl_Init(void)
 {
+    l293dInit();
+    RegisterMotorDrvCommand();
 
 }
 
@@ -51,6 +54,7 @@ void MOTORCtrl_DeInit(void)
 
 void ygGoForward(void)
 {
+    TRACE("ygGoForward\n");
     MOTORCtrl_Rotate(  motortype_Front_Left , rotateType_CW);
     MOTORCtrl_Rotate(  motortype_Front_Right, rotateType_CW);
 

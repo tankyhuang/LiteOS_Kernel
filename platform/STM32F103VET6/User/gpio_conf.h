@@ -64,6 +64,18 @@ BEHIND_RIGHT_B_PIN	PD2	    左电机使能IO
                                                 GPIO_L293D_IN3_CLK | \
                                                 GPIO_L293D_IN4_CLK
 
+#define GPIO_VOID_R_PIN         GPIO_Pin_7
+#define GPIO_VOID_R_GPIO        GPIOC
+#define GPIO_VOID_R_CLK         RCC_APB2Periph_GPIOC
+
+#define GPIO_VOID_L_PIN         GPIO_Pin_2
+#define GPIO_VOID_L_GPIO        GPIOG
+#define GPIO_VOID_L_CLK         RCC_APB2Periph_GPIOG
+
+#define BARRIER_Y 0        //
+#define BARRIER_N 1        //
+
+
 void GPIODrv_Init(void);
 
 #ifdef __cplusplus

@@ -20,6 +20,7 @@
 
 #include <main_task.h>
 #include <toycarfactory.h>
+#include <SystemMonitor.h>
 
 extern void LOS_EvbSetup(void);
 extern int __Vectors_Size;
@@ -121,8 +122,11 @@ int main(void)
     MainTask_Init();
     LEDDrv_Init();
     GPIODrv_Init();
+    SYSTEM_MONITOR_Init();
     ToyCarFactory_CreateGameState();
-
+    TRACE("1111\n");
+    ToyCar_ChangeState(toyCarState_Avoidence);
+    TRACE("222\n");
 
     // Don't put code here    
     /* Kernel start to run */

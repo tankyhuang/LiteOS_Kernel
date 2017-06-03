@@ -1,5 +1,6 @@
 #include "stm32f10x.h"
 #include "types.h"
+#include "SystemMonitor.h"
 #include "ToyCarManager.h"
 #include "ToyCarState.h"
 #include "debug.h"
@@ -147,6 +148,26 @@ void ToyCarManager_RegisterState( TOYCAR_STATE_ID StateID, const char *pName, P_
     s_tToyCarStateTable[StateID].pOnStart   = pOnStart;
     s_tToyCarStateTable[StateID].pOnStop    = pOnStop;
     s_tToyCarStateTable[StateID].pOnEventHandler = pOnEventHandler;
+}
+
+
+static void OnRedRayStatusNotification( void *pParameter )
+{
+    uint32_t status = (uint32_t)pParameter;
+    TRACE("OnRedRayStatusNotification\n");
+
+    ToyCarManager_OnEventHandler( toyCarEvent_RedRay, pParameter, NULL, NULL );
+}
+
+void _ToyCar_OnRedRayNotificationCBR( void *pUserInstance, SYS_RED_RAY_STATUS status )
+{
+    TRACE("_ToyCar_OnRedRayNotificationCBR\n");
+    UserCallbackDispatcher_ExecuteCallback( &OnRedRayStatusNotification, (void*)status);
+}
+
+void _ToyCar_OnCreated( uint32_t Param, void *pUserInstance )
+{
+    ToyCarManager_OnEventHandler( toyCarEvent_OnCreate, (void *)Param, NULL, NULL );
 }
 
 // NEW MODE CBR

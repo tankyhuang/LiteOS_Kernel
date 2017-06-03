@@ -59,6 +59,6 @@ sti_GetGPIOEx( STI_GPIO_GROUP_TYPE group,
    
     psGPIOx = (GPIO_TypeDef *)(GPIOA_BASE + 0x0400 * group);
     
-    return GPIO_ReadInputDataBit(psGPIOx, pin);
+    return GPIO_ReadInputDataBit(psGPIOx, GPIO_Pin_0<<pin);
 }
 

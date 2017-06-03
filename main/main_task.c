@@ -6,11 +6,37 @@
 #include <console.h>
 #include "los_task.h"
 #include "los_queue.h"
+#include "los_membox.h"
+#include "HostMessageHandler.h"
+#include "main_task.h"
 
 static UINT32 m_mainTaskId = 0;
 static UINT32 m_mainQ      = 0;
 
-CHAR message[] = "test is message x";
+static const char		*ker_pMsgSignature	= "Msg";
+static const char       *ker_pCbrSignature  = "Cbr";
+//static const char       *ker_pUserSignature  = "User";
+
+static UINT8 m_aucMainMessagePool[sizeof(MESSAGE) * 16] = {0};
+static HOST_MSG_HANDLE m_sHostMsgHandle    = {0};
+static USER_TASK_INFO m_sUserCallbackHandle      = {0};
+
+static USER_TASK_INFO *s_pUserCallbackHandleList = NULL;
+
+void SendMessage(HMESSAGEQUEUE hMessageQueue, MSGID_T MessageClass, MSGID_T MessageID, MSGPARAM_T Parameter);
+void ReceiveMessage(HMESSAGEQUEUE hMessageQueue, MSGID_T *pMessageClass, MSGID_T *pMessageID, MSGPARAM_T *pParameter);
+
+HUSERCALLBACK UserCallbackDispatcher_CreateHandle(PUSER_TASK_INFO handle,HTASK hTask, HMESSAGEQUEUE hMessageQueue);
+
+VOID UserCallbackDispatcher_Dispatch(MSGID_T MessageID, MSGPARAM_T Parameter)
+{
+	P_USER_CALLBACK pcbr = (P_USER_CALLBACK)MessageID;
+	VOID *pparam = Parameter;
+
+	ASSERT(pcbr != NULL);
+
+	(*pcbr)(pparam);
+}
 
 VOID *
 MainTask( UINT32 uwParam1,
@@ -18,31 +44,27 @@ MainTask( UINT32 uwParam1,
               UINT32 uwParam3,
               UINT32 uwParam4 )
 {
-    UINT32 msgID;
-    UINT32 uwRet = 0;
-    UINT32 uwMsgCount = 0;
-
+    MESSAGE msg;
+    
     while (1)
     {
-        uwRet = LOS_QueueRead(m_mainQ, &msgID, 4, LOS_WAIT_FOREVER);
-        if(uwRet != LOS_OK)
-        {
-            TRACE("recv message failure,error:%x\n",uwRet);
-            break;
-        }
-		else
-		{
-			uwMsgCount++;
-		}
-        TRACE("msgid = %d\n", msgID);
+        ReceiveMessage( (HMESSAGEQUEUE)m_mainQ, 
+                        &msg.MessageClass, 
+                        &msg.MessageID,
+                        &msg.Parameter );
 
-        switch( msgID )
+        TRACE("msgClass = %d msgid = 0x%08x param = %d\n", msg.MessageClass,msg.MessageID, msg.Parameter);
+
+        switch( msg.MessageClass )
         {
-            case 1:
-                //TRACE("msg 1\n");
+            case MESSAGE_HANDLER_ID_HOST:
+                HostMessageHandler_Distributor(msg.MessageID, 
+                                               msg.Parameter);
                 break;
-            case 2:
-                //TRACE("msg 2\n");
+            case MESSAGE_HANDLER_ID_USER:
+            
+                UserCallbackDispatcher_Dispatch(msg.MessageID, 
+                                                msg.Parameter);
                 break;
             default:
                 break;
@@ -50,13 +72,11 @@ MainTask( UINT32 uwParam1,
         
         LOS_TaskDelay(5);
     }
-
-    return 0;
 }
 
 void MainTask_Init(void)
 {
-    UINT32 uwRet;
+    UINT32 uwRet = LOS_OK;
     
     TSK_INIT_PARAM_S stTaskInitParam;
     
@@ -66,17 +86,13 @@ void MainTask_Init(void)
     stTaskInitParam.pcName          = "mainTask";
     stTaskInitParam.usTaskPrio      = LOS_TASK_PRIORITY_HIGHEST + 5;
     
-    uwRet = LOS_TaskCreate(&m_mainTaskId, &stTaskInitParam);
-    if (uwRet != LOS_OK)
-    {
-        TRACE("MainTask create failed\n");
-    }
+    uwRet += LOS_TaskCreate(&m_mainTaskId, &stTaskInitParam);    
+    uwRet += LOS_QueueCreate("queue", 6, &m_mainQ, 0, 4*4);
+    uwRet += LOS_MemboxInit(m_aucMainMessagePool, sizeof(m_aucMainMessagePool), sizeof(MESSAGE) );
+    ASSERT( LOS_OK == uwRet );
 
-    uwRet = LOS_QueueCreate("queue", 5, &m_mainQ, 0, 50);
-    if(uwRet != LOS_OK)
-    {
-        TRACE("MainQ create failed %x\n", uwRet);
-    }
+    HostMessageHandler_CreateHandle(&m_sHostMsgHandle, (HTASK)m_mainTaskId, (HMESSAGEQUEUE)m_mainQ );
+    UserCallbackDispatcher_CreateHandle(&m_sUserCallbackHandle, (HTASK)m_mainTaskId, (HMESSAGEQUEUE)m_mainQ );
 
     TRACE("MainTask_Init\n");
 }
@@ -85,17 +101,111 @@ void mainTaskCreate(void)
 {
 }
 
-void MainTask_SendMessage( void* msg, UINT32 param )
+HOST_MSG_HANDLE *
+MainTask_GetHandle(void)
 {
-    UINT32 uwRet = 0;
-   
+    return &m_sHostMsgHandle;
+}
+
+void MainTask_SendMessage( uint32_t msgID, uint32_t msgParam )
+{
     if ( m_mainTaskId )
     {
-        uwRet = LOS_QueueWrite(m_mainQ, msg, sizeof(message), 0);
-        if(uwRet != LOS_OK)
-        {
-            TRACE("MainTask_SendMessage ERR 0x%x\n", uwRet);
-        }    
+        SendMessage((HMESSAGEQUEUE)m_mainQ, MESSAGE_HANDLER_ID_HOST, (MSGID_T)msgID, (MSGPARAM_T)msgParam);
     }
+}
+
+void ReceiveMessage(HMESSAGEQUEUE hMessageQueue, MSGID_T *pMessageClass, MSGID_T *pMessageID, MSGPARAM_T *pParameter)
+{
+    uint16_t uwRet;
+    MESSAGE *pMsg;
+
+    ASSERT( NULL != pMessageClass );
+    ASSERT( NULL != pMessageID );
+    ASSERT( NULL != pParameter );
+    
+    uwRet = LOS_QueueRead((UINT32)hMessageQueue, &pMsg, sizeof(UINT32), LOS_WAIT_FOREVER);
+    ASSERT( LOS_OK == uwRet);
+
+    if ( NULL != pMsg )
+    {
+        ASSERT( pMsg->pSignature == ker_pMsgSignature );
+        
+        *pMessageClass = pMsg->MessageClass;
+        *pMessageID    = pMsg->MessageID;
+        *pParameter    = pMsg->Parameter;
+    
+        uwRet = LOS_MemboxFree(m_aucMainMessagePool, pMsg);
+
+        ASSERT( LOS_OK == uwRet );
+        
+        return ;
+    }
+
+    ASSERT( FALSE );
+}
+
+void SendMessage(HMESSAGEQUEUE hMessageQueue, MSGID_T MessageClass, MSGID_T MessageID, MSGPARAM_T Parameter)
+{
+	MESSAGE	    *pmsg;
+    UINT16          uwRet;
+    
+    pmsg = LOS_MemboxAlloc(m_aucMainMessagePool);
+    ASSERT( NULL != pmsg);
+    
+	pmsg->pSignature    = ker_pMsgSignature;
+	pmsg->MessageClass	= MessageClass;
+	pmsg->MessageID		= MessageID;
+	pmsg->Parameter		= Parameter;
+
+    uwRet = LOS_QueueWrite((UINT32)hMessageQueue, pmsg, sizeof(UINT32), 0);
+    if(uwRet != LOS_OK)
+    {
+        TRACE("SendMessage ERR 0x%x\n", uwRet);
+    }   
+    
+	ASSERT(LOS_OK == uwRet);
+}
+
+HUSERCALLBACK UserCallbackDispatcher_CreateHandle(PUSER_TASK_INFO handle,HTASK hTask, HMESSAGEQUEUE hMessageQueue)
+{
+	PUSER_TASK_INFO pinfo = handle;
+
+	//TakeSemaphore(s_hUserCallbackMutex);
+
+	pinfo->pSignature = ker_pCbrSignature;
+	pinfo->pNext = NULL;
+	pinfo->hTask = hTask;
+	pinfo->hMessageQueue = hMessageQueue;
+
+	if(s_pUserCallbackHandleList == NULL)
+	{
+		s_pUserCallbackHandleList = pinfo;
+	}
+	else
+	{
+		PUSER_TASK_INFO ptmp = s_pUserCallbackHandleList;
+
+		while(ptmp->pNext != NULL)
+		{
+			ptmp = ptmp->pNext;
+		}
+		ptmp->pNext = pinfo;
+	}
+
+	//GiveSemaphore(s_hUserCallbackMutex);
+
+	return ((HUSERCALLBACK)pinfo);
+}
+
+
+VOID UserCallbackDispatcher_ExecuteCallback(P_USER_CALLBACK pUserCBR, VOID *pParameter)
+{
+	PUSER_TASK_INFO pinfo = (PUSER_TASK_INFO)&m_sUserCallbackHandle;
+
+	ASSERT(pinfo->pSignature == ker_pCbrSignature);
+	ASSERT(pUserCBR != NULL);
+
+	SendMessage(pinfo->hMessageQueue, MESSAGE_HANDLER_ID_USER, (MSGID_T)pUserCBR, (MSGPARAM_T)pParameter);
 }
 

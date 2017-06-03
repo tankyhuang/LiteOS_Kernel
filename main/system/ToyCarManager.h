@@ -9,7 +9,8 @@ typedef enum _TOYCAR_EVENT_ID
 	toyCarEvent_Idle,
 	toyCarEvent_S0,
 	toyCarEvent_S1,
-
+    toyCarEvent_RedRay,
+    toyCarEvent_OnCreate
 } TOYCAR_EVENT_ID;
 
 typedef enum _TOYCAR_STATE_ID
@@ -59,6 +60,8 @@ typedef struct STOYCAR_STATE
 void ToyCarManager_Init( void );
 void ToyCarManager_OnEventHandler( TOYCAR_EVENT_ID EventID, void *pParam, P_TOYCAR_COMPLETE_CBR pCompleteCBR, void *pUserInstance );
 
+void _ToyCar_OnRedRayNotificationCBR( void *pUserInstance, SYS_RED_RAY_STATUS status );
+
 void ToyCarManager_OnRegisterStatusNotifyCBR( P_TOYCAR_STATUS_NOTIFY_CBR pStatusNotifyCBR, void *pUserInstance );
 void ToyCarManager_OnUnregisterStatusNotifyCBR( void );
 void ToyCarManager_OnRegisterErrorNotifyCBR( P_TOYCAR_ERROR_NOTIFY_CBR pNotifyCBR, void *pUserInstance );
@@ -69,9 +72,11 @@ void ToyCarManager_OnIdle( P_TOYCAR_COMPLETE_CBR pCompleteCBR, void *pUserInstan
 void ToyCarManager_OnS0( P_TOYCAR_COMPLETE_CBR pCompleteCBR, void *pUserInstance );
 void ToyCarManager_OnS1( P_TOYCAR_COMPLETE_CBR pCompleteCBR, void *pUserInstance );
 
+void _ToyCar_OnCreated( uint32_t Param, void *pUserInstance );
+
 void ToyCarManager_OnSysHalt( P_TOYCAR_COMPLETE_CBR pCompleteCBR, void *pUserInstance );
 
-void ToyCarManager_ChangeState( TOYCAR_STATE_ID NewID );
+void ToyCar_ChangeState( TOYCAR_STATE_ID NewID );
 void ToyCarManager_RegisterState( TOYCAR_STATE_ID ID, const char *pName, P_TOYCAR_ON_START_STATE pOnStart, P_TOYCAR_ON_STOP_STATE pOnStop, P_TOYCAR_ON_EVENT_HANDLER pOnEventHandler );
 
 

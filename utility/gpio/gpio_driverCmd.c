@@ -41,7 +41,7 @@ static SCONSOLECOMMAND sConsoleGPIO[] =
 
 void RegisterGPIODriverCommand(void)
 {
-    consoleRegisterFunctions(sConsoleGPIO);
+    //consoleRegisterFunctions(sConsoleGPIO);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -68,15 +68,21 @@ static void GPIOConsole_Output(char *szArguments)
 
 static void GPIOConsole_Input(char *szArguments)
 {
-	int			param1;	// 
+	char	    param1;	// 
 	int			param2;	// 
     uint8_t     value;
+    STI_GPIO_GROUP_TYPE group;
 
-	sscanf(szArguments, "%d %d", &param1, &param2);
+	sscanf(szArguments, "%c %d", &param1, &param2);
 
-    value = sti_GetGPIOEx((STI_GPIO_GROUP_TYPE)param1, (uint16_t)param2);
+    group = (STI_GPIO_GROUP_TYPE)(sti_GPIOA + (param1 - 'a'));
+
+    // up 
+    sti_ConfigGPIOEx(group, param2, GPIO_Speed_50MHz, GPIO_Mode_IPU );
+
+    value = sti_GetGPIOEx(group, (uint16_t)param2);
     
-    printf("port[%c] %d\n", ('A'+param1), value);
+    printf("port[%c] pin%d - %d\n", param1, param2, value);
     
 	return;
 }
